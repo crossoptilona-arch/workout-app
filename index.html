@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Workout Tracker">
+    <title>Danielle's Workout Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+```
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        background: #f5f5f5;
+        color: #333;
+        line-height: 1.5;
+        padding-bottom: 80px;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .header {
+        background: #000;
+        color: #fff;
+        padding: 16px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .header h1 {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .header .subtitle {
+        font-size: 12px;
+        color: #aaa;
+        margin-top: 4px;
+    }
+
+    .tabs {
+        display: flex;
+        background: #fff;
+        border-bottom: 1px solid #ddd;
+        position: sticky;
+        top: 60px;
+        z-index: 99;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+        flex: 1;
+        padding: 14px 12px;
+        text-align: center;
+        background: #fff;
+        border: none;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        cursor: pointer;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        transition: all 0.2s;
+    }
+
+    .tab.active {
+        color: #000;
+        border-bottom-color: #000;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 16px;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    .workout-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+    }
+
+    .workout-header h2 {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .workout-header .meta {
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .section {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .section-title {
+        font-size: 16px;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #000;
+    }
+
+    .warmup-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    .warmup-list li {
+        padding: 8px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+    }
+
+    .warmup-list li:last-child {
+        border-bottom: none;
+    }
+
+    .warmup-list li:before {
+        content: "•";
+        color: #667eea;
+        font-weight: bold;
+        margin-right: 8px;
+    }
+
+    .exercise {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .exercise-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #000;
+        margin-bottom: 6px;
+    }
+
+    .exercise-prescription {
+        font-size: 13px;
+        color: #666;
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .exercise-form {
+        font-size: 13px;
+        color: #555;
+        font-style: italic;
+        margin-bottom: 12px;
+        line-height: 1.6;
+    }
+
+    .week-selector {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .week-btn {
+        flex: 1;
+        min-width: 70px;
+        padding: 10px;
+        border: 2px solid #ddd;
+        background: white;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .week-btn.active {
+        border-color: #667eea;
+        background: #667eea;
+        color: white;
+    }
+
+    .tracking-inputs {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .tracking-inputs.reps-only {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .input-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-group label {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .input-group input,
+    .input-group textarea {
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        font-family: inherit;
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+
+    .notes-input {
+        grid-column: 1 / -1;
+    }
+
+    .notes-input textarea {
+        resize: vertical;
+        min-height: 60px;
+    }
+
+    .save-indicator {
+        font-size: 11px;
+        color: #28a745;
+        margin-top: 4px;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .save-indicator.show {
+        opacity: 1;
+    }
+
+    .bottom-nav {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        border-top: 1px solid #ddd;
+        padding: 12px 16px;
+        display: flex;
+        gap: 8px;
+        box-shadow: 0 -2px 8px rgba(0,0,0,0.1);
+    }
+
+    .btn {
+        flex: 1;
+        padding: 12px 16px;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .btn-primary {
+        background: #667eea;
+        color: white;
+    }
+
+    .btn-primary:active {
+        background: #5568d3;
+    }
+
+    .btn-secondary {
+        background: #f0f0f0;
+        color: #333;
+    }
+
+    .btn-secondary:active {
+        background: #e0e0e0;
+    }
+
+    .progress-section {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .progress-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .week-progress {
+        text-align: center;
+        padding: 12px 8px;
+        border-radius: 8px;
+        background: #f8f9fa;
+    }
+
+    .week-progress.completed {
+        background: #d4edda;
+        border: 2px solid #28a745;
+    }
+
+    .week-progress .week-label {
+        font-size: 11px;
+        color: #666;
+        margin-bottom: 4px;
+    }
+
+    .week-progress .week-check {
+        font-size: 20px;
+        color: #28a745;
+    }
+
+    .info-box {
+        background: #fff9e6;
+        border-left: 4px solid #ffc107;
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 6px;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .calendar-view {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .calendar-row {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .calendar-day {
+        padding: 12px 8px;
+        border-radius: 8px;
+        font-size: 11px;
+        text-align: center;
+        border: 1px solid #ddd;
+    }
+
+    .calendar-day.header {
+        background: #000;
+        color: white;
+        font-weight: 600;
+        border: none;
+    }
+
+    .calendar-day.strength {
+        background: #ffe6e6;
+        border-color: #ff6b6b;
+    }
+
+    .calendar-day.cardio {
+        background: #e6f3ff;
+        border-color: #4dabf7;
+    }
+
+    .calendar-day .day-name {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .pullup-tracker {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .hang-inputs {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+        margin-top: 12px;
+    }
+
+    .rules-section {
+        background: white;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .rule-item {
+        padding: 12px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .rule-item:last-child {
+        border-bottom: none;
+    }
+
+    .rule-item strong {
+        color: #667eea;
+    }
+
+    .collapsible {
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .collapsible:after {
+        content: ' ▼';
+        font-size: 10px;
+        margin-left: 6px;
+    }
+
+    .collapsible.collapsed:after {
+        content: ' ▶';
+    }
+
+    .collapsible-content {
+        max-height: 2000px;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+
+    .collapsible-content.collapsed {
+        max-height: 0;
+    }
+
+    .install-prompt {
+        background: #e7f3ff;
+        border: 2px solid #2196F3;
+        border-radius: 12px;
+        padding: 16px;
+        margin: 16px;
+        text-align: center;
+    }
+
+    .install-prompt h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+        color: #1976D2;
+    }
+
+    .install-prompt p {
+        font-size: 13px;
+        color: #555;
+        line-height: 1.6;
+    }
+
+    .install-prompt button {
+        margin-top: 12px;
+        background: #2196F3;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+</style>
+```
+
+</head>
+<body>
+    <div id="install-banner" class="install-prompt" style="display: none;">
+        <h3>📱 Add to Home Screen</h3>
+        <p>Tap the Share button <strong>⬆️</strong> at the bottom, then select "Add to Home Screen" for easy access!</p>
+        <button onclick="document.getElementById('install-banner').style.display='none'">Got it!</button>
+    </div>
+
+```
+<div class="header">
+    <h1>Block 1: Foundation & Pull-Up Prep</h1>
+    <div class="subtitle">4 Weeks | Deload Week 5</div>
+</div>
+
+<div class="tabs">
+    <button class="tab active" onclick="switchTab('overview', event)">Overview</button>
+    <button class="tab" onclick="switchTab('tuesday', event)">Tuesday</button>
+    <button class="tab" onclick="switchTab('thursday', event)">Thursday</button>
+    <button class="tab" onclick="switchTab('sunday', event)">Sunday</button>
+    <button class="tab" onclick="switchTab('progress', event)">Progress</button>
+</div>
+
+<div id="overview" class="tab-content active">
+    <div class="info-box">
+        <strong>RPE Guide:</strong> RPE 7 = 3 reps left | RPE 8 = 2 reps left | RPE 9 = 1 rep left | RPE 10 = failure
+    </div>
+
+    <div class="calendar-view">
+        <h3 class="section-title">Weekly Schedule</h3>
+        <div class="calendar-row">
+            <div class="calendar-day header">MON</div>
+            <div class="calendar-day header">TUE</div>
+            <div class="calendar-day header">WED</div>
+            <div class="calendar-day header">THU</div>
+            <div class="calendar-day header">FRI/SAT</div>
+        </div>
+        <div class="calendar-row">
+            <div class="calendar-day cardio">
+                <span class="day-name">Zone 2</span>
+                5:30 AM<br>40 min
+            </div>
+            <div class="calendar-day strength">
+                <span class="day-name">Full Body #1</span>
+                5:30 AM<br>35-40 min
+            </div>
+            <div class="calendar-day cardio">
+                <span class="day-name">Sprints</span>
+                5:30 AM<br>Peloton
+            </div>
+            <div class="calendar-day strength">
+                <span class="day-name">Full Body #2</span>
+                5:30 AM<br>35-40 min
+            </div>
+            <div class="calendar-day cardio">
+                <span class="day-name">Zone 2</span>
+                40 min
+            </div>
+        </div>
+    </div>
+
+    <div style="background: white; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+        <div class="calendar-day strength" style="margin: 0;">
+            <span class="day-name">SUNDAY - Full Body #3 Extended</span>
+            1:00 PM - 60 min<br>
+            <small>Then at home: Dead Hang + Scap Pull-Ups</small>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Block Objectives</h3>
+        <ul class="warmup-list">
+            <li>Establish true progressive overload - learn what RPE 8-9 feels like</li>
+            <li>Build dead hang to 30+ seconds (prerequisite for pull-up negatives)</li>
+            <li>Introduce controlled impact work starting from zero</li>
+            <li>Hit all movement patterns 3x per week (Dr. Stacy Sims protocol)</li>
+            <li>Build comprehensive core strength and loaded carry capacity</li>
+        </ul>
+    </div>
+
+    <div class="rules-section">
+        <h3 class="section-title collapsible" onclick="toggleCollapse(this)">Progression Rules</h3>
+        <div class="collapsible-content">
+            <div class="rule-item">
+                <strong>When to Increase Weight:</strong> If you complete ALL prescribed sets × reps at RPE 8-9 (1-2 reps left in tank on final set), increase next session. Lower body: +5-10 lbs. Upper body: +2.5-5 lbs.
+            </div>
+            <div class="rule-item">
+                <strong>When to Regress:</strong> If form breaks down before hitting rep target, if RPE is 10 before final set, or if recovery is suffering (sleep disrupted, soreness 3+ days).
+            </div>
+            <div class="rule-item">
+                <strong>Pull-Up Timeline:</strong> Weeks 1-4 build dead hang to 30s. Once you hit 30s × 3 sets → progress to eccentric negatives (Week 5-6).
+            </div>
+        </div>
+    </div>
+
+    <div class="rules-section">
+        <h3 class="section-title collapsible" onclick="toggleCollapse(this)">Post-Workout Protocol</h3>
+        <div class="collapsible-content">
+            <div class="rule-item">
+                <strong>Protein Timing:</strong> Consume 25-30g protein within 30 minutes post-workout (critical for perimenopausal women per Dr. Stacy Sims).
+            </div>
+            <div class="rule-item">
+                <strong>Supplements:</strong> Creatine 5g daily (anytime), Vitamin D (current dose), Magnesium (before bed for sleep).
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="tuesday" class="tab-content">
+    <div class="workout-header">
+        <h2>TUESDAY - Full Body #1</h2>
+        <div class="meta">35-40 minutes | 5:30 AM</div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Warm-Up (5 min)</h3>
+        <ul class="warmup-list">
+            <li>90s treadmill walk</li>
+            <li>10 bodyweight squats</li>
+            <li>10 push-ups (easy pace)</li>
+            <li>10 band pull-aparts</li>
+            <li>5 goblet squats (light)</li>
+        </ul>
+    </div>
+
+    <div id="tuesday-exercises"></div>
+</div>
+
+<div id="thursday" class="tab-content">
+    <div class="workout-header">
+        <h2>THURSDAY - Full Body #2</h2>
+        <div class="meta">35-40 minutes | 5:30 AM</div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Warm-Up (5 min)</h3>
+        <ul class="warmup-list">
+            <li>90s treadmill walk</li>
+            <li>10 hip circles each direction</li>
+            <li>10 arm circles forward/back</li>
+            <li>10 alternating reverse lunges</li>
+            <li>5 single-arm rows (light, each side)</li>
+        </ul>
+    </div>
+
+    <div id="thursday-exercises"></div>
+</div>
+
+<div id="sunday" class="tab-content">
+    <div class="workout-header">
+        <h2>SUNDAY - Full Body #3 (Extended)</h2>
+        <div class="meta">60 minutes | 1:00 PM</div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Warm-Up (8 min)</h3>
+        <ul class="warmup-list">
+            <li>3 min easy treadmill walk/jog</li>
+            <li>10 cat-cows</li>
+            <li>10 glute bridges (bodyweight, 2s hold)</li>
+            <li>10 band pull-aparts</li>
+            <li>5 reverse lunges each leg (bodyweight)</li>
+            <li>5 push-ups (easy)</li>
+        </ul>
+    </div>
+
+    <div id="sunday-exercises"></div>
+
+    <div class="info-box">
+        <strong>After workout, at home:</strong> Complete Dead Hang (3×max time, 2min rest) + Scapular Pull-Ups (2×8, 90s rest). Track below in Progress tab.
+    </div>
+</div>
+
+<div id="progress" class="tab-content">
+    <div class="pullup-tracker">
+        <h3 class="section-title">Pull-Up Progression Tracker</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Goal: Build to 30s × 3 sets before progressing to negatives</p>
+        
+        <div class="week-selector">
+            <button class="week-btn active" onclick="selectPullupWeek(1)">Week 1</button>
+            <button class="week-btn" onclick="selectPullupWeek(2)">Week 2</button>
+            <button class="week-btn" onclick="selectPullupWeek(3)">Week 3</button>
+            <button class="week-btn" onclick="selectPullupWeek(4)">Week 4</button>
+        </div>
+
+        <div id="pullup-inputs"></div>
+    </div>
+
+    <div class="progress-section">
+        <h3 class="section-title">Weekly Completion</h3>
+        <div class="progress-grid" id="weekly-completion"></div>
+    </div>
+
+    <div class="section">
+        <h3 class="section-title">Export Data</h3>
+        <p style="font-size: 13px; color: #666; margin-bottom: 12px;">Download all your workout data as a CSV file for backup or import to Google Sheets</p>
+        <button class="btn btn-primary" onclick="exportToCSV()" style="width: 100%;">Export to CSV</button>
+    </div>
+</div>
+
+<div class="bottom-nav">
+    <button class="btn btn-secondary" onclick="clearAllData()">Reset Data</button>
+    <button class="btn btn-primary" onclick="saveData()">Save Progress</button>
+</div>
+
+<script>
+    const workouts = {
+        tuesday: [
+            {id: 'tue_goblet_squat', name: 'A. Goblet Squat (Lower Body - Quad Dominant)', prescription: '4 × 8 | 2min rest | RPE 8-9', form: 'Heels down, chest proud, elbows inside knees at bottom, pause 1s in hole. Hold dumbbell vertically at chest.', trackingType: 'standard'},
+            {id: 'tue_db_press', name: 'B. Dumbbell Chest Press (Upper Push - Horizontal)', prescription: '3 × 8 | 90s rest | RPE 8-9', form: 'PRIMARY STRENGTH DRIVER - GO HEAVY. On bench, dumbbells at chest level, press up and slightly together, control down, elbows ~45° from body.', trackingType: 'standard'},
+            {id: 'tue_sl_rdl', name: 'C. Single-Leg Romanian Deadlift (Lower Body - Hip Hinge)', prescription: '3 × 10/leg | 90s rest | RPE 8', form: 'Hold dumbbells in both hands for balance. Hinge from hips, back flat, non-working leg reaches straight back, feel hamstring stretch on standing leg.', trackingType: 'standard'},
+            {id: 'tue_db_row', name: 'D. Bent-Over Dumbbell Row (Upper Pull - Bilateral Horizontal)', prescription: '3 × 10 | 60s rest | RPE 8', form: 'Hinge forward 45°, slight knee bend, dumbbells hang at arms\' length. Pull elbows past ribs, squeeze shoulder blades together, control down.', trackingType: 'standard'},
+            {id: 'tue_dead_bug', name: 'E. Dead Bug (Core - Anti-Extension)', prescription: '2 × 12/side | 45s rest', form: 'Lie on back, low back GLUED to floor entire time. Opposite arm and leg extend slowly, return, switch sides. Breathe continuously.', trackingType: 'reps'}
+        ],
+        thursday: [
+            {id: 'thu_bulgarian', name: 'A. Bulgarian Split Squat (Lower Body - Single Leg)', prescription: '4 × 8/leg | 90s rest | RPE 8-9', form: 'Rear foot elevated on bench, front shin stays vertical. Dumbbell in each hand. Drop back knee down and forward, chest up, drive through front heel to stand.', trackingType: 'standard'},
+            {id: 'thu_sa_row', name: 'B. Single-Arm Dumbbell Row (Upper Pull - Unilateral)', prescription: '3 × 10/arm | 90s rest | RPE 8', form: 'One knee and hand on bench for support. Pull dumbbell to hip, elbow travels past ribcage, squeeze shoulder blade at top. Complete all reps one side before switching.', trackingType: 'standard'},
+            {id: 'thu_glute_bridge', name: 'C. Glute Bridge (Lower Body - Hip Extension)', prescription: '3 × 12 | 90s rest | RPE 8', form: 'Shoulders on ground, feet flat hip-width apart, dumbbell(s) resting on hips. Drive through heels, squeeze glutes HARD at top for 2-second hold, control down.', trackingType: 'standard'},
+            {id: 'thu_incline_press', name: 'D. Low-Incline Dumbbell Press (Upper Push - Angled)', prescription: '3 × 10 | 60s rest | RPE 7-8', form: 'Bench at 30-45° angle (find angle that doesn\'t aggravate L4-L5). Dumbbells at chest, press up and slightly together, control down. Lower back-friendly overhead substitute.', trackingType: 'standard'},
+            {id: 'thu_bicep_curl', name: 'E. Bicep Curl (Upper Pull - Assistance)', prescription: '3 × 12 | 60s rest | RPE 7', form: 'Standing, dumbbells at sides. Supinated grip (palms up), curl with control, squeeze at top, control down. No swinging. Pull-up prerequisite work.', trackingType: 'standard'},
+            {id: 'thu_pallof', name: 'F. Pallof Press (Core - Anti-Rotation)', prescription: '2 × 12/side | 45s rest', form: 'Band anchored at chest height. Stand perpendicular to anchor, hold band handle at chest with both hands. Press straight out, resist rotation, pull back. Face doesn\'t rotate.', trackingType: 'reps'}
+        ],
+        sunday: [
+            {id: 'sun_reverse_lunge', name: 'A. Reverse Lunge (Lower Body - Single Leg Dynamic)', prescription: '4 × 8/leg | 2min rest | RPE 8-9', form: 'Dumbbell in each hand at sides. Step back with one leg, drop back knee toward floor, front shin stays vertical. Drive through front heel to return to standing.', trackingType: 'standard'},
+            {id: 'sun_pushup', name: 'B. Push-Up (Upper Push - Bodyweight)', prescription: '3 × AMRAP-2 | 90s rest | RPE 9', form: 'AMRAP-2 = stop 2 reps before failure (if you could do 12, stop at 10). Hands slightly wider than shoulders, elbows 45° from body, lower chest to 1-2" from ground. NO sagging hips. Elevate hands on bench if needed to stay in 8-12 rep range.', trackingType: 'reps'},
+            {id: 'sun_tricep', name: 'C. Tricep Overhead Extension (Upper Push - Assistance)', prescription: '3 × 12 | 60s rest | RPE 7', form: 'Single dumbbell held with both hands. Arms overhead, lower dumbbell behind head by bending elbows (elbows stay pointing UP), extend back to start.', trackingType: 'standard'},
+            {id: 'sun_calf', name: 'D. Calf Raise (Lower Body - Accessory)', prescription: '3 × 15 | 60s rest | RPE 7', form: 'Stand on edge of step/box (heels hanging off), dumbbell(s) in hand for resistance. Full range: deep stretch at bottom, rise as high as possible, pause 1s at top.', trackingType: 'standard'},
+            {id: 'sun_db_row', name: 'E. Bent-Over Dumbbell Row (Upper Pull - Add Volume)', prescription: '3 × 10 | 90s rest | RPE 8', form: 'Same as Tuesday - hinge forward 45°, pull elbows past ribs, squeeze shoulder blades. Third pulling session this week = frequency for pull-up progression.', trackingType: 'standard'},
+            {id: 'sun_stepup', name: 'F. Step-Up with Emphasis Landing (Bone Density)', prescription: '2 × 10/leg | 60s rest', form: 'Step up onto box, stand tall at top, step down with CONTROL (3-second eccentric), land softly ball-of-foot first. FOOT CHECK: If neuromas flare, reduce box height or volume.', trackingType: 'stepup'},
+            {id: 'sun_farmer', name: 'G. Farmer Carry (Functional Strength - Grip/Core)', prescription: '3 rounds × 60s walk | 90s rest between rounds', form: 'Heavy dumbbells in each hand (as heavy as you can grip for 60s). Walk with good posture - shoulders packed down, chest up, no leaning. Core stays braced.', trackingType: 'carry'},
+            {id: 'sun_side_plank', name: 'H. Side Plank (Core - Lateral Stability)', prescription: '2 × 30s/side | 45s rest', form: 'Forearm on ground, stack feet or stagger for easier version. Body in straight line from head to feet, hips don\'t sag.', trackingType: 'reps'},
+            {id: 'sun_plank', name: 'I. Plank (Core - Anti-Extension)', prescription: '2 × 45-60s | 60s rest', form: 'Forearms on ground, body straight line from head to heels. Squeeze glutes HARD, don\'t let hips sag or pike up. Low back protection.', trackingType: 'reps'}
+        ]
+    };
+
+    let currentWeek = 1;
+    let currentPullupWeek = 1;
+    let workoutData = {};
+
+    function init() {
+        loadData();
+        renderWorkouts();
+        renderPullupTracker();
+        renderWeeklyCompletion();
+        
+        // Show install banner on iOS
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isStandalone = window.navigator.standalone;
+        if (isIOS && !isStandalone) {
+            setTimeout(() => {
+                document.getElementById('install-banner').style.display = 'block';
+            }, 2000);
+        }
+    }
+
+    function switchTab(tabName, event) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        event.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+    }
+
+    function selectWeek(week) {
+        currentWeek = week;
+        renderWorkouts();
+    }
+
+    function selectPullupWeek(week) {
+        currentPullupWeek = week;
+        renderPullupTracker();
+    }
+
+    function renderWorkouts() {
+        ['tuesday', 'thursday', 'sunday'].forEach(day => {
+            const container = document.getElementById(`${day}-exercises`);
+            container.innerHTML = `
+                <div class="week-selector">
+                    ${[1,2,3,4].map(w => `
+                        <button class="week-btn ${w === currentWeek ? 'active' : ''}" 
+                                onclick="selectWeek(${w})">Week ${w}</button>
+                    `).join('')}
+                </div>
+            ` + workouts[day].map(exercise => {
+                const key = `${day}_${exercise.id}_w${currentWeek}`;
+                const data = workoutData[key] || {};
+                
+                return `
+                    <div class="exercise">
+                        <div class="exercise-name">${exercise.name}</div>
+                        <div class="exercise-prescription">${exercise.prescription}</div>
+                        <div class="exercise-form">${exercise.form}</div>
+                        ${renderTrackingInputs(exercise, key, data)}
+                    </div>
+                `;
+            }).join('');
+        });
+    }
+
+    function renderTrackingInputs(exercise, key, data) {
+        if (exercise.trackingType === 'reps') {
+            return `
+                <div class="tracking-inputs reps-only">
+                    <div class="input-group">
+                        <label>Reps Achieved</label>
+                        <input type="text" value="${data.reps || ''}" 
+                               onchange="updateData('${key}', 'reps', this.value)">
+                    </div>
+                    <div class="input-group notes-input">
+                        <label>Notes</label>
+                        <textarea onchange="updateData('${key}', 'notes', this.value)">${data.notes || ''}</textarea>
+                    </div>
+                </div>
+                <div class="save-indicator" id="save-${key}">✓ Saved</div>
+            `;
+        } else if (exercise.trackingType === 'stepup') {
+            return `
+                <div class="tracking-inputs">
+                    <div class="input-group">
+                        <label>Box Height</label>
+                        <input type="text" value="${data.boxHeight || ''}" 
+                               onchange="updateData('${key}', 'boxHeight', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Completed?</label>
+                        <input type="text" value="${data.completed || ''}" 
+                               onchange="updateData('${key}', 'completed', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Foot Status</label>
+                        <input type="text" value="${data.footStatus || ''}" 
+                               onchange="updateData('${key}', 'footStatus', this.value)">
+                    </div>
+                </div>
+                <div class="save-indicator" id="save-${key}">✓ Saved</div>
+            `;
+        } else if (exercise.trackingType === 'carry') {
+            return `
+                <div class="tracking-inputs">
+                    <div class="input-group">
+                        <label>Weight (each hand)</label>
+                        <input type="text" value="${data.weight || ''}" 
+                               onchange="updateData('${key}', 'weight', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Rounds Completed</label>
+                        <input type="text" value="${data.rounds || ''}" 
+                               onchange="updateData('${key}', 'rounds', this.value)">
+                    </div>
+                    <div class="input-group notes-input">
+                        <label>Notes</label>
+                        <textarea onchange="updateData('${key}', 'notes', this.value)">${data.notes || ''}</textarea>
+                    </div>
+                </div>
+                <div class="save-indicator" id="save-${key}">✓ Saved</div>
+            `;
+        } else {
+            return `
+                <div class="tracking-inputs">
+                    <div class="input-group">
+                        <label>Weight (lbs)</label>
+                        <input type="number" step="2.5" value="${data.weight || ''}" 
+                               onchange="updateData('${key}', 'weight', this.value)">
+                    </div>
+                    <div class="input-group">
+                        <label>Sets × Reps</label>
+                        <input type="text" value="${data.sets || ''}" 
+                               onchange="updateData('${key}', 'sets', this.value)"
+                               placeholder="e.g. 4×8">
+                    </div>
+                    <div class="input-group">
+                        <label>RPE</label>
+                        <input type="number" min="1" max="10" value="${data.rpe || ''}" 
+                               onchange="updateData('${key}', 'rpe', this.value)">
+                    </div>
+                    <div class="input-group notes-input">
+                        <label>Notes</label>
+                        <textarea onchange="updateData('${key}', 'notes', this.value)">${data.notes || ''}</textarea>
+                    </div>
+                </div>
+                <div class="save-indicator" id="save-${key}">✓ Saved</div>
+            `;
+        }
+    }
+
+    function renderPullupTracker() {
+        const container = document.getElementById('pullup-inputs');
+        const key = `pullup_w${currentPullupWeek}`;
+        const data = workoutData[key] || {};
+        
+        container.innerHTML = `
+            <div class="hang-inputs">
+                <div class="input-group">
+                    <label>Set 1 (seconds)</label>
+                    <input type="number" value="${data.set1 || ''}" 
+                           onchange="updateData('${key}', 'set1', this.value)">
+                </div>
+                <div class="input-group">
+                    <label>Set 2 (seconds)</label>
+                    <input type="number" value="${data.set2 || ''}" 
+                           onchange="updateData('${key}', 'set2', this.value)">
+                </div>
+                <div class="input-group">
+                    <label>Set 3 (seconds)</label>
+                    <input type="number" value="${data.set3 || ''}" 
+                           onchange="updateData('${key}', 'set3', this.value)">
+                </div>
+            </div>
+            <div class="input-group" style="margin-top: 12px;">
+                <label>Notes</label>
+                <textarea onchange="updateData('${key}', 'notes', this.value)">${data.notes || ''}</textarea>
+            </div>
+            <div class="save-indicator" id="save-${key}">✓ Saved</div>
+        `;
+    }
+
+    function renderWeeklyCompletion() {
+        const container = document.getElementById('weekly-completion');
+        container.innerHTML = [1,2,3,4].map(week => {
+            const hasData = Object.keys(workoutData).some(k => k.includes(`_w${week}`));
+            return `
+                <div class="week-progress ${hasData ? 'completed' : ''}">
+                    <div class="week-label">Week ${week}</div>
+                    ${hasData ? '<div class="week-check">✓</div>' : '<div style="height: 24px;"></div>'}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function updateData(key, field, value) {
+        if (!workoutData[key]) workoutData[key] = {};
+        workoutData[key][field] = value;
+        
+        const indicator = document.getElementById(`save-${key}`);
+        if (indicator) {
+            indicator.classList.add('show');
+            setTimeout(() => indicator.classList.remove('show'), 2000);
+        }
+        
+        saveData();
+    }
+
+    function saveData() {
+        try {
+            localStorage.setItem('workoutData', JSON.stringify(workoutData));
+            renderWeeklyCompletion();
+        } catch(e) {
+            alert('Error saving data. Your device storage may be full.');
+        }
+    }
+
+    function loadData() {
+        try {
+            const saved = localStorage.getItem('workoutData');
+            if (saved) {
+                workoutData = JSON.parse(saved);
+            }
+        } catch(e) {
+            console.error('Error loading data:', e);
+        }
+    }
+
+    function clearAllData() {
+        if (confirm('Are you sure you want to reset ALL workout data? This cannot be undone.')) {
+            workoutData = {};
+            localStorage.removeItem('workoutData');
+            renderWorkouts();
+            renderPullupTracker();
+            renderWeeklyCompletion();
+            alert('All data has been reset.');
+        }
+    }
+
+    function exportToCSV() {
+        let csv = 'Day,Exercise,Week,Weight,Sets×Reps,RPE,Notes\n';
+        
+        Object.keys(workoutData).forEach(key => {
+            const parts = key.split('_');
+            const day = parts[0];
+            const exerciseId = parts.slice(1, -1).join('_');
+            const week = parts[parts.length - 1];
+            const data = workoutData[key];
+            
+            if (key.includes('pullup')) {
+                csv += `Sunday (at home),Dead Hang,${week},bodyweight,"${data.set1 || ''}s / ${data.set2 || ''}s / ${data.set3 || ''}s",-,"${(data.notes || '').replace(/"/g, '""')}"\n`;
+            } else {
+                const exercise = Object.values(workouts).flat().find(e => e.id === exerciseId);
+                const exerciseName = exercise ? exercise.name : exerciseId;
+                
+                csv += `${day},"${exerciseName}",${week},${data.weight || ''},${data.sets || data.reps || ''},${data.rpe || ''},"${(data.notes || '').replace(/"/g, '""')}"\n`;
+            }
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `workout_data_${new Date().toISOString().split('T')[0]}.csv`;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function toggleCollapse(element) {
+        element.classList.toggle('collapsed');
+        element.nextElementSibling.classList.toggle('collapsed');
+    }
+
+    // Initialize
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+</script>
+```
+
+</body>
+</html>
