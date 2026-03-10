@@ -283,18 +283,17 @@
   /* ── REST TIMER BANNER ── */
   .rest-banner {
     position: sticky;
-    top: 112px; /* below header + week-bar */
+    top: 0;
     z-index: 90;
-    margin: 8px 20px 0;
+    margin: 0 0 0 0;
     background: var(--surface3);
     border: 1px solid var(--accent-dim);
-    border-radius: var(--radius);
-    padding: 10px 16px;
+    border-bottom: 2px solid var(--accent-dim);
+    padding: 10px 20px;
     display: none;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
   }
   .rest-banner.active { display: flex; }
   .rest-banner.done {
@@ -342,21 +341,6 @@
 
 <div class="toast" id="toast"></div>
 
-<!-- REST TIMER BANNER -->
-<div class="rest-banner" id="restBanner">
-  <div class="rest-banner-left">
-    <div class="rest-banner-label" id="restBannerLabel">Rest</div>
-    <div class="rest-banner-exercise" id="restBannerEx"></div>
-  </div>
-  <div class="rest-banner-center">
-    <div class="rest-timer-count" id="restTimerCount">90</div>
-    <div class="rest-timer-bar-bg">
-      <div class="rest-timer-bar-fill" id="restTimerBar" style="width:100%"></div>
-    </div>
-  </div>
-  <button class="rest-banner-skip" onclick="skipRest()">Skip</button>
-</div>
-
 <div class="header">
   <div class="header-left">
     <div class="header-title">Block 2 Tracker</div>
@@ -383,6 +367,21 @@
 
 <!-- LOG -->
 <div class="view active" id="view-log">
+
+  <!-- REST TIMER BANNER -->
+  <div class="rest-banner" id="restBanner">
+    <div class="rest-banner-left">
+      <div class="rest-banner-label" id="restBannerLabel">Rest</div>
+      <div class="rest-banner-exercise" id="restBannerEx"></div>
+    </div>
+    <div class="rest-banner-center">
+      <div class="rest-timer-count" id="restTimerCount">90</div>
+      <div class="rest-timer-bar-bg">
+        <div class="rest-timer-bar-fill" id="restTimerBar" style="width:100%"></div>
+      </div>
+    </div>
+    <button class="rest-banner-skip" onclick="skipRest()">Skip</button>
+  </div>
 
   <!-- WEEKLY OVERVIEW -->
   <div class="weekly-overview">
@@ -710,7 +709,7 @@ function renderWorkout() {
         <div class="exercise-name-row">
           <div class="exercise-label">Exercise ${String.fromCharCode(65+idx)}</div>
           <div class="exercise-name">${ex.name}${ex.superset?'<span class="superset-tag">SUPERSET</span>':''}</div>
-          <div class="exercise-prescription">${ex.prescription}</div>
+          <div class="exercise-prescription">${ex.prescription}${ex.restSeconds ? ` | ${ex.restSeconds}s rest` : ''}</div>
         </div>
         <button class="complete-check ${isComplete?'done':''}" onclick="toggleComplete('${ex.id}')">${isComplete?'✓':''}</button>
       </div>`;
