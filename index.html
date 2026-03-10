@@ -280,6 +280,58 @@
   input[type="number"] { -moz-appearance: textfield; }
   input[type="number"]::-webkit-outer-spin-button, input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
 
+  /* ── REST TIMER BANNER ── */
+  .rest-banner {
+    position: sticky;
+    top: 112px; /* below header + week-bar */
+    z-index: 90;
+    margin: 8px 20px 0;
+    background: var(--surface3);
+    border: 1px solid var(--accent-dim);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .rest-banner.active { display: flex; }
+  .rest-banner.done {
+    border-color: var(--green-dim);
+    background: var(--green-glow);
+  }
+  .rest-banner-left { display: flex; flex-direction: column; gap: 1px; }
+  .rest-banner-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .rest-banner-exercise {
+    font-family: var(--mono); font-size: 11px; color: var(--text-dim);
+  }
+  .rest-banner-center { display: flex; flex-direction: column; align-items: center; gap: 2px; flex: 1; }
+  .rest-timer-count {
+    font-family: var(--mono); font-size: 28px; font-weight: 500;
+    color: var(--accent); letter-spacing: -0.02em; line-height: 1;
+  }
+  .rest-banner.done .rest-timer-count { color: var(--green); }
+  .rest-timer-bar-bg {
+    width: 100%; max-width: 120px; height: 3px;
+    background: var(--surface); border-radius: 2px; overflow: hidden;
+  }
+  .rest-timer-bar-fill {
+    height: 100%; background: var(--accent);
+    border-radius: 2px; transition: width 0.9s linear;
+  }
+  .rest-banner.done .rest-timer-bar-fill { background: var(--green); width: 100% !important; }
+  .rest-banner-skip {
+    background: transparent; border: 1px solid var(--border-light);
+    border-radius: var(--radius-sm); color: var(--text-faint);
+    font-family: var(--mono); font-size: 11px; padding: 6px 10px;
+    cursor: pointer; white-space: nowrap;
+  }
+  .rest-banner-skip:hover { color: var(--text); border-color: var(--text-faint); }
+
   @media (max-width: 380px) {
     .sets-header, .set-row { grid-template-columns: 26px 1fr 1fr 48px; }
     .sets-header.bw, .set-row.bw { grid-template-columns: 26px 1fr 48px; }
@@ -289,6 +341,21 @@
 <body>
 
 <div class="toast" id="toast"></div>
+
+<!-- REST TIMER BANNER -->
+<div class="rest-banner" id="restBanner">
+  <div class="rest-banner-left">
+    <div class="rest-banner-label" id="restBannerLabel">Rest</div>
+    <div class="rest-banner-exercise" id="restBannerEx"></div>
+  </div>
+  <div class="rest-banner-center">
+    <div class="rest-timer-count" id="restTimerCount">90</div>
+    <div class="rest-timer-bar-bg">
+      <div class="rest-timer-bar-fill" id="restTimerBar" style="width:100%"></div>
+    </div>
+  </div>
+  <button class="rest-banner-skip" onclick="skipRest()">Skip</button>
+</div>
 
 <div class="header">
   <div class="header-left">
@@ -387,53 +454,53 @@ const PROGRAM = {
   tuesday: {
     label: 'Tuesday — Full Body + Carry',
     exercises: [
-      { id:'goblet_squat', name:'Goblet Squat', prescription:'4 × 8 | RPE 8-9', sets:4,
+      { id:'goblet_squat', name:'Goblet Squat', prescription:'4 × 8 | RPE 8-9', sets:4, restSeconds:90,
         weekTargets:['Start 40 lbs. All 4×8 at RPE 8 → move to 45 lbs.','At 40 lbs and RPE solid at 8 → move to 45 lbs this week.','Push load. RPE consistently below 8 → increase weight.','DELOAD: 2 sets only. Reduce weight 15%.'] },
-      { id:'chest_press', name:'DB Chest Press', prescription:'3 × 8 | RPE 8-9', sets:3,
+      { id:'chest_press', name:'DB Chest Press', prescription:'3 × 8 | RPE 8-9', sets:3, restSeconds:90,
         weekTargets:['Start 30 lbs. 2s descent. All 3×8 clean → increase to 35 lbs.','At 35 lbs — aim for all 3×8 complete.','35 lbs below RPE 8 → increase to 40 lbs.','DELOAD: 2 sets only. Reduce weight 15%.'] },
-      { id:'sl_rdl', name:'Single-Leg RDL', prescription:'3 × 10 each side | RPE 8-9', sets:3,
+      { id:'sl_rdl', name:'Single-Leg RDL', prescription:'3 × 10 each side | RPE 8-9', sets:3, restSeconds:90,
         weekTargets:['Start 15 lbs each hand. Note weaker side. All 3×10 → 17.5 lbs.','At 17.5 lbs. Note: when this passes 20 lbs, increase Sunday RDL too.','All sets clean → 20 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'sa_row', name:'Single-Arm DB Row', prescription:'3 × 10 each side | RPE 8-9', sets:3, superset:true,
+      { id:'sa_row', name:'Single-Arm DB Row', prescription:'3 × 10 each side | RPE 8-9', sets:3, restSeconds:60, superset:true,
         weekTargets:['Start 20 lbs. 1s hold at top. All 3×10 each side → 25 lbs.','At 25 lbs — log side difference.','Both sides clean at 25 lbs → 27.5 or 30 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'band_pulldown', name:'Band Pull-Down', prescription:'3 × 12 | RPE 7-8 — SUPERSET', sets:3, isBodyweight:true, superset:true,
+      { id:'band_pulldown', name:'Band Pull-Down', prescription:'3 × 12 | RPE 7-8 — SUPERSET', sets:3, restSeconds:60, isBodyweight:true, superset:true,
         weekTargets:['Light-medium band. Elbows drive down to sides. Establish the movement.','3×12 easy (RPE below 7) → heavier band this week.','Still easy → go heavier. Target RPE 7-8.','DELOAD: 2 sets. Lighter band, easy effort.'] },
-      { id:'farmer_carry', name:'Farmer Carry', prescription:'3 × 45s | Start: 25 lbs each', sets:3, isCarry:true,
+      { id:'farmer_carry', name:'Farmer Carry', prescription:'3 × 45s | Start: 25 lbs each', sets:3, restSeconds:90, isCarry:true,
         weekTargets:['Start 25 lbs each hand. Tall spine. All 3 rounds solid → 30 lbs.','At 30 lbs — focus on posture, no forward lean.','30 lbs easy → 35 lbs.','DELOAD: 2 rounds. Same weight, easy effort.'] },
     ]
   },
   thursday: {
     label: 'Thursday — Full Body',
     exercises: [
-      { id:'bulgarian_ss', name:'Bulgarian Split Squat', prescription:'4 × 8 each side | RPE 8-9', sets:4,
+      { id:'bulgarian_ss', name:'Bulgarian Split Squat', prescription:'4 × 8 each side | RPE 8-9', sets:4, restSeconds:90,
         weekTargets:['Start 15 lbs. Weight through front heel. All 4×8 each side → 20 lbs.','At 20 lbs — both sides must complete all reps before increasing.','Both sides clean at 20 lbs → 22.5 or 25 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'incline_press', name:'Low-Incline DB Press', prescription:'3 × 10 | RPE 7-8', sets:3,
+      { id:'incline_press', name:'Low-Incline DB Press', prescription:'3 × 10 | RPE 7-8', sets:3, restSeconds:75,
         weekTargets:['Start 15 lbs. Shoulder health movement — keep RPE 7-8, not higher.','RPE below 7 last week → 17.5 lbs.','At 17.5 lbs — no grinding. Keep RPE in range.','DELOAD: 2 sets. Same weight — RPE will drop naturally.'] },
-      { id:'sl_glute_bridge', name:'Single-Leg Glute Bridge', prescription:'3 × 12 each side | RPE 8', sets:3, isBodyweight:true,
+      { id:'sl_glute_bridge', name:'Single-Leg Glute Bridge', prescription:'3 × 12 each side | RPE 8', sets:3, restSeconds:60, isBodyweight:true,
         weekTargets:['Bodyweight. Full hip extension, hard squeeze at top. Note weaker side.','RPE below 7 last week → add 10 lb DB on hip.','With 10 lb DB — aim for all 3×12 each side clean.','DELOAD: 2 sets. Remove added weight.'] },
-      { id:'bilateral_row_thu', name:'Bent-Over DB Row', prescription:'3 × 10 | RPE 8-9', sets:3,
+      { id:'bilateral_row_thu', name:'Bent-Over DB Row', prescription:'3 × 10 | RPE 8-9', sets:3, restSeconds:75,
         weekTargets:['Start 20 lbs. Hinge 45°, 1s hold at top. All 3×10 → 25 lbs.','At 25 lbs — lock in the hold, no bouncing.','25 lbs clean → 27.5 or 30 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'dead_bug', name:'Dead Bug', prescription:'3 × 12 | 8 lbs each hand', sets:3,
+      { id:'dead_bug', name:'Dead Bug', prescription:'3 × 12 | 8 lbs each hand', sets:3, restSeconds:60,
         weekTargets:['8 lbs each hand. Lower back PINNED to floor the entire time.','All 3×12 with back flat → increase to 10 lbs.','At 10 lbs — if back lifts, weight is too heavy.','DELOAD: 2 sets. Return to 8 lbs.'] },
     ]
   },
   sunday: {
     label: 'Sunday — Full Body + Hangs + Bone Density',
     exercises: [
-      { id:'dead_hang', name:'Dead Hang', prescription:'3 × max effort', sets:3, isHang:true,
+      { id:'dead_hang', name:'Dead Hang', prescription:'3 × max effort', sets:3, restSeconds:120, isHang:true,
         weekTargets:['HARD CAP at 25s. Finger healing. Log time each set — stop at 25s even if you have more.','HARD CAP at 25s. Consistency week. Note any finger sensation.','Cap removed. Test true max each set. Log every time — this is your baseline.','DELOAD: 2 sets × 20s easy only. No max testing.'] },
-      { id:'reverse_lunge', name:'Reverse Lunge', prescription:'4 × 8 each side | RPE 8-9', sets:4,
+      { id:'reverse_lunge', name:'Reverse Lunge', prescription:'4 × 8 each side | RPE 8-9', sets:4, restSeconds:90,
         weekTargets:['Start 20 lbs. Control descent, drive through front heel. All 4×8 → 25 lbs.','At 25 lbs — focus on deceleration quality.','25 lbs clean → 27.5 or 30 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'db_rdl', name:'Dumbbell RDL', prescription:'3 × 10 | RPE 8-9', sets:3,
+      { id:'db_rdl', name:'Dumbbell RDL', prescription:'3 × 10 | RPE 8-9', sets:3, restSeconds:90,
         weekTargets:['Start 30 lbs each hand. Feel it in hamstrings not low back. All 3×10 → 35 lbs. Linked to Tuesday SL-RDL.','At 35 lbs — 2s slow eccentric. If Tuesday SL-RDL passed 20 lbs, increase here too.','35 lbs clean → 37.5 or 40 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'bilateral_row_sun', name:'Bent-Over DB Row', prescription:'3 × 10 | RPE 8-9', sets:3,
+      { id:'bilateral_row_sun', name:'Bent-Over DB Row', prescription:'3 × 10 | RPE 8-9', sets:3, restSeconds:75,
         weekTargets:['Start 20 lbs. 3rd weekly rowing session. 1s hold each rep. All 3×10 → 25 lbs.','At 25 lbs — controlled, not fast.','25 lbs clean → 27.5 or 30 lbs.','DELOAD: 2 sets. Reduce weight 15%.'] },
-      { id:'pushup_bench', name:'Push-Up (Bench)', prescription:'3 × max | RPE 9-10', sets:3, isBodyweight:true,
+      { id:'pushup_bench', name:'Push-Up (Bench)', prescription:'3 × max | RPE 9-10', sets:3, restSeconds:90, isBodyweight:true,
         weekTargets:['Bench only. Go to failure each set. Log every rep count.','Compare to W1 rep counts. Any increase = progress.','Hit 3×10 on bench this week → progress to floor next block.','DELOAD: 2 sets. Stop 3-4 reps before failure.'] },
-      { id:'tricep_ext', name:'Tricep Overhead Extension', prescription:'3 × 10 | RPE 8-9', sets:3,
+      { id:'tricep_ext', name:'Tricep Overhead Extension', prescription:'3 × 10 | RPE 8-9', sets:3, restSeconds:60,
         weekTargets:['Start 10 lbs. Elbows narrow. All 3×10 clean → 12 lbs.','At 12 lbs — note any low back sensation.','12 lbs clean → 15 lbs.','DELOAD: 2 sets. Return to 10 lbs.'] },
-      { id:'step_up', name:'Step-Up with Pause Landing', prescription:'2 × 10 each side | Bodyweight', sets:2, isBodyweight:true,
+      { id:'step_up', name:'Step-Up with Pause Landing', prescription:'2 × 10 each side | Bodyweight', sets:2, restSeconds:60, isBodyweight:true,
         weekTargets:['Bodyweight. Step up, pause 2s, controlled down. Note any neuroma response.','Pain-free last week → same prescription. Log foot response.','W3 of 4 pain-free Sundays needed for Block 3 progression.','DELOAD: 1 set × 8 each side. Easy pace.'] },
-      { id:'calf_raise', name:'Calf Raise', prescription:'3 × 12 | Bodyweight', sets:3, isBodyweight:true,
+      { id:'calf_raise', name:'Calf Raise', prescription:'3 × 12 | Bodyweight', sets:3, restSeconds:45, isBodyweight:true,
         weekTargets:['Bodyweight. 2s up, 2s down, full range.','3×15 easy last week → hold dumbbells for added load.','Same as W2 — progress only if consistently easy.','DELOAD: 2 sets. Bodyweight only.'] },
     ]
   }
@@ -443,6 +510,78 @@ let currentDay = 'tuesday';
 let sessions = JSON.parse(localStorage.getItem('b2_sessions') || '[]');
 let blockStartDate = localStorage.getItem('b2_blockStart') || '';
 let currentLog = {};
+
+// ── REST TIMER ────────────────────────────────────────────────────────────────
+let restInterval = null;
+let restRemaining = 0;
+let restTotal = 0;
+
+function startRest(exId) {
+  const ex = PROGRAM[currentDay].exercises.find(e => e.id === exId);
+  if (!ex || !ex.restSeconds) return;
+
+  // Clear any existing timer
+  clearInterval(restInterval);
+
+  restTotal = ex.restSeconds;
+  restRemaining = ex.restSeconds;
+
+  const banner = document.getElementById('restBanner');
+  const countEl = document.getElementById('restTimerCount');
+  const barEl = document.getElementById('restTimerBar');
+  const labelEl = document.getElementById('restBannerLabel');
+  const exEl = document.getElementById('restBannerEx');
+
+  banner.className = 'rest-banner active';
+  labelEl.textContent = 'Rest';
+  exEl.textContent = ex.name;
+  countEl.textContent = restRemaining;
+  barEl.style.transition = 'none';
+  barEl.style.width = '100%';
+
+  restInterval = setInterval(() => {
+    restRemaining--;
+    countEl.textContent = restRemaining;
+    const pct = (restRemaining / restTotal) * 100;
+    barEl.style.transition = 'width 0.9s linear';
+    barEl.style.width = pct + '%';
+
+    if (restRemaining <= 0) {
+      clearInterval(restInterval);
+      banner.className = 'rest-banner active done';
+      labelEl.textContent = 'Go!';
+      countEl.textContent = '✓';
+      playRestDoneSound();
+      setTimeout(() => { banner.className = 'rest-banner'; }, 3000);
+    }
+  }, 1000);
+}
+
+function skipRest() {
+  clearInterval(restInterval);
+  document.getElementById('restBanner').className = 'rest-banner';
+}
+
+function playRestDoneSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    // Two short ascending beeps
+    [0, 0.18].forEach((delay, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = i === 0 ? 880 : 1100;
+      osc.type = 'sine';
+      gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+      gain.gain.linearRampToValueAtTime(0.4, ctx.currentTime + delay + 0.01);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + delay + 0.18);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.2);
+    });
+  } catch(e) { /* audio not available */ }
+}
+
 
 function getBlockWeek(forDate) {
   if (!blockStartDate) return null;
@@ -646,6 +785,8 @@ function toggleSetDone(exId, si) {
   const d = currentLog[exId].sets[si].done;
   btn.className = 'set-done-btn' + (d ? ' set-complete' : '');
   btn.textContent = d ? '✓' : '○';
+  if (d) startRest(exId);
+  else { clearInterval(restInterval); document.getElementById('restBanner').className = 'rest-banner'; }
   updateProgress();
 }
 
