@@ -662,13 +662,42 @@ body {
 }
 
 /* BLOCK SWITCHER */
+.header-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
 .block-switcher {
   display: inline-flex;
   background: var(--bg-alt);
   border: 1px solid var(--line);
   border-radius: 3px;
   overflow: hidden;
-  margin-bottom: 6px;
+}
+
+.export-btn {
+  padding: 7px 12px;
+  background: var(--bg-alt);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.export-btn:active {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
 }
 
 .block-switcher button {
@@ -779,9 +808,12 @@ body {
     <span class="week-label" id="weekLabel">Week 1 of 4</span>
   </div>
   <h1 class="title" id="mainTitle">Strength <em>rebuild.</em></h1>
-  <div class="block-switcher">
-    <button data-block="1" class="active">Block 1</button>
-    <button data-block="2">Block 2</button>
+  <div class="header-controls">
+    <div class="block-switcher">
+      <button data-block="1" class="active">Block 1</button>
+      <button data-block="2">Block 2</button>
+    </div>
+    <button class="export-btn" id="exportBtn" title="Download all logged data as CSV">↓ Export CSV</button>
   </div>
   <div class="week-nav" id="weekNav"></div>
 </header>
@@ -2108,6 +2140,141 @@ document.querySelectorAll('.block-switcher button').forEach(btn => {
     renderAll();
   });
 });
+
+// CSV EXPORT
+function exportCSV() {
+  const rows = [];
+  // Header row
+  rows.push([
+    'block',
+    'week',
+    'day',
+    'day_name',
+    'exercise_code',
+    'exercise_name',
+    'set_number',
+    'weight_lb',
+    'reps_or_seconds',
+    'rpe',
+    'completed',
+    'prescribed_sets',
+    'prescribed_reps',
+    'prescribed_rest',
+    'prescribed_rpe',
+    'is_hang_exercise'
+  ]);
+
+  // Iterate both blocks, all weeks, all days, all exercises, all sets
+  const blocks = [
+    { num: 1, program: BLOCK_1 },
+    { num: 2, program: BLOCK_2 }
+  ];
+
+  blocks.forEach(({ num, program }) => {
+    for (let week = 1; week <= program.weeks; week++) {
+      program.days.forEach(day => {
+        day.blocks.forEach(block => {
+          block.exercises.forEach(ex => {
+            for (let setIdx = 1; setIdx <= ex.sets; setIdx++) {
+              const wKey = getLogKey(num, week, day.key, ex.code, setIdx, 'weight');
+              const rKey = getLogKey(num, week, day.key, ex.code, setIdx, 'reps');
+              const rpeKey = getLogKey(num, week, day.key, ex.code, setIdx, 'rpe');
+              const dKey = getLogKey(num, week, day.key, ex.code, setIdx, 'done');
+
+              const weight = state.log[wKey] || '';
+              const reps = state.log[rKey] || '';
+              const rpe = state.log[rpeKey] || '';
+              const done = state.log[dKey] ? 'yes' : 'no';
+
+              // Only include rows where at least one field has data, OR include all rows
+              // Including all rows is more useful for tracking what's planned vs done
+              const hasData = weight || reps || rpe || state.log[dKey];
+
+              rows.push([
+                num,
+                week,
+                day.key,
+                day.name,
+                ex.code,
+                ex.name,
+                setIdx,
+                weight,
+                reps,
+                rpe,
+                done,
+                ex.sets,
+                ex.reps,
+                ex.rest,
+                ex.rpe,
+                ex.isHang ? 'yes' : 'no'
+              ]);
+            }
+          });
+        });
+      });
+    }
+  });
+
+  // Add foot check rows separately
+  rows.push([]); // blank row separator
+  rows.push(['FOOT CHECKS']);
+  rows.push(['block', 'week', 'day', 'pain_rating']);
+  Object.keys(state.footChecks).forEach(key => {
+    // key format: fc_{block}_{week}_{day}
+    const parts = key.split('_');
+    if (parts[0] === 'fc') {
+      rows.push([parts[1], parts[2], parts[3], state.footChecks[key]]);
+    }
+  });
+
+  // Add hang best
+  rows.push([]);
+  rows.push(['HANG PROGRESS']);
+  rows.push(['metric', 'value']);
+  rows.push(['current_best_seconds', state.hangBest]);
+  rows.push(['target_seconds', 120]);
+  rows.push(['progress_pct', Math.round((state.hangBest / 120) * 100)]);
+
+  // Convert to CSV string
+  const csv = rows.map(row => {
+    return row.map(cell => {
+      if (cell === null || cell === undefined) return '';
+      const str = String(cell);
+      // Quote if contains comma, quote, or newline
+      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+      }
+      return str;
+    }).join(',');
+  }).join('\n');
+
+  // Generate filename with current date
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const filename = `workout_log_${dateStr}.csv`;
+
+  // Trigger download
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+
+  // Visual confirmation
+  const btn = document.getElementById('exportBtn');
+  if (btn) {
+    const originalText = btn.textContent;
+    btn.textContent = '✓ Downloaded';
+    setTimeout(() => { btn.textContent = originalText; }, 2000);
+  }
+}
+
+document.getElementById('exportBtn').addEventListener('click', exportCSV);
 
 // Init
 (async () => {
