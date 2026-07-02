@@ -38,8 +38,10 @@
   .strip-card .dow{font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.5px;}
   .strip-card .dt{font-size:12px; color:var(--text2); margin:2px 0 6px;}
   .strip-card .type{font-size:10.5px; font-weight:600; padding:3px 4px; border-radius:5px; line-height:1.25;}
+  .strip-card .dur{font-size:10px; color:var(--text3); margin-top:4px;}
   .tp-strength{background:rgba(201,146,47,.18); color:var(--brass);}
   .tp-cardio{background:rgba(111,155,184,.18); color:var(--blue);}
+  .tp-sprint{background:rgba(181,83,60,.22); color:#e08468;}
   .tp-cond{background:rgba(122,155,110,.18); color:var(--olive);}
   .tp-rest{background:rgba(255,255,255,.06); color:var(--text3);}
   .tp-review{background:rgba(181,83,60,.18); color:var(--rust);}
@@ -197,7 +199,7 @@ const DAYS = {
       list:[E('goblet_squat',3,8,10),E('bent_row',3,8,10),E('db_rdl',3,8,10),
             E('lateral_raise',3,8,10),E('bench_dip',3,10,10),E('pushup',3,10,10)],
       finisher:'Side plank 3x20s/side'},
-    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:8, work:20, recovery:100},
     thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
     sat:{type:'cardio', label:'Zone 2', machine:'Walk/Bike Mix', mode:'Mixed walk/bike, extended session', min:80},
     sun:{type:'rest', label:'Rest'}
@@ -215,7 +217,7 @@ const DAYS = {
       list:[E('goblet_squat',3,8,8),E('bent_row',3,8,8),E('db_rdl',3,8,8),
             E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
       finisher:'Side plank 3x20s/side, suitcase carry 3x30s/side'},
-    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:9, work:20, recovery:95},
     thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
     sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 3 Rounds', rounds:3, restRounds:90,
       base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
@@ -235,7 +237,7 @@ const DAYS = {
       list:[E('goblet_squat',3,6,8),E('bent_row',3,6,8),E('db_rdl',3,6,8),
             E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
       finisher:'Side plank + suitcase carry, then 3 min AMRAP push-up/mountain climber'},
-    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:10, work:25, recovery:90},
     thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
     sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 4 Rounds', rounds:4, restRounds:60,
       base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
@@ -313,6 +315,12 @@ function resolveDate(date){
 
 function phaseFor(block,week){ return PHASES[block].find(p=>p.week===week); }
 function dayTemplate(block,dayKey){ return DAYS[block][dayKey]; }
+
+/* Expected session duration, in minutes. Cardio wired first; other day types return null until added. */
+function expectedDuration(tmpl){
+  if(tmpl.type==='cardio') return tmpl.min;
+  return null;
+}
 
 /* ============================== STORAGE ============================== */
 const cache = {};
@@ -414,12 +422,14 @@ async function renderStrip(){
     const r = resolveDate(d);
     const card = document.createElement('div');
     card.className = 'strip-card' + (i===0?' today':'') + (toISO(d)===toISO(selectedDate)?' selected':'');
-    let typeClass='tp-rest', typeLabel='—', deload=false;
+    let typeClass='tp-rest', typeLabel='—', deload=false, dur=null;
     if(r){
       const tmpl = dayTemplate(r.block, r.dayKey);
       const phase = phaseFor(r.block, r.week);
       deload = phase && phase.phase==='deload';
+      dur = expectedDuration(tmpl);
       if(tmpl.type==='strength'){typeClass='tp-strength'; typeLabel=tmpl.focus;}
+      else if(tmpl.type==='sprint'){typeClass='tp-sprint'; typeLabel=tmpl.machine;}
       else if(tmpl.type==='cardio'){typeClass='tp-cardio'; typeLabel=tmpl.machine;}
       else if(tmpl.type==='conditioning'){typeClass='tp-cond'; typeLabel=tmpl.focus;}
       else if(tmpl.type==='review'){typeClass='tp-review'; typeLabel='Review';}
@@ -427,7 +437,8 @@ async function renderStrip(){
     }
     card.innerHTML = `<div class="dow">${DOW_LABEL[d.getDay()]}</div>
       <div class="dt mono">${d.getMonth()+1}/${d.getDate()}</div>
-      <div class="type ${typeClass}">${typeLabel}${deload?'<span class="deload-dot"></span>':''}</div>`;
+      <div class="type ${typeClass}">${typeLabel}${deload?'<span class="deload-dot"></span>':''}</div>
+      ${dur?`<div class="dur mono">${dur} min</div>`:''}`;
     card.onclick = ()=>{ selectedDate = d; renderAll(); };
     strip.appendChild(card);
   }
@@ -488,10 +499,12 @@ async function renderMain(){
   const deloadBadge = phase && phase.phase==='deload' ? '<span class="badge deload">Deload</span>' : '';
   let heading = tmpl.label, subLabel = '';
   if(tmpl.type==='strength'){ heading = tmpl.focus; subLabel = tmpl.label; }
+  else if(tmpl.type==='sprint'){ heading = tmpl.machine; subLabel = tmpl.label; }
   else if(tmpl.type==='cardio'){ heading = tmpl.machine; subLabel = 'Zone 2'; }
   else if(tmpl.type==='conditioning'){ heading = tmpl.focus; subLabel = tmpl.label; }
+  const dur = expectedDuration(tmpl);
   html += `<div class="day-banner"><h2>${heading}${deloadBadge}</h2>
-    <div class="meta">${subLabel?subLabel+' · ':''}${r.blockLabel} · ${DOW_LABEL[selectedDate.getDay()]} ${selectedDate.getMonth()+1}/${selectedDate.getDate()}${phase?' · RPE target '+phase.rpe:''}</div></div>`;
+    <div class="meta">${subLabel?subLabel+' · ':''}${r.blockLabel} · ${DOW_LABEL[selectedDate.getDay()]} ${selectedDate.getMonth()+1}/${selectedDate.getDate()}${phase?' · RPE target '+phase.rpe:''}${dur?' · ~'+dur+' min':''}</div></div>`;
 
   if(tmpl.type==='strength'){
     if(tmpl.hang){
@@ -506,6 +519,8 @@ async function renderMain(){
       html += `<div class="finisher"><b>Finisher:</b> ${tmpl.finisher}</div>`;
     }
     html += renderPainLog(sess);
+  } else if(tmpl.type==='sprint'){
+    html += renderSprint(tmpl, r, sess);
   } else if(tmpl.type==='cardio'){
     html += `<div class="card zone2box"><h3>${tmpl.min} min</h3>
       <div>${tmpl.mode}</div>
@@ -530,6 +545,7 @@ async function renderMain(){
   wireExerciseInputs(r, phase, iso);
   wirePainLog(r, phase, iso);
   wireConditioningChecks(r, iso);
+  wireSprint(r, iso, tmpl);
 }
 
 async function renderExerciseCard(item, r, phase, sess, iso){
@@ -602,7 +618,40 @@ async function renderConditioning(tmpl, r, sess, iso){
   </div>`;
 }
 
-/* ============================== WIRING ============================== */
+async function renderSprint(tmpl, r, sess){
+  return `<div class="card"><h3>Sprint Protocol</h3>
+    <div class="rx">${tmpl.warmupMin} min warm-up · ${tmpl.rounds}×${tmpl.work}s max effort / ${tmpl.recovery}s easy spin · ${tmpl.cooldownMin} min cool-down</div>
+    <div class="warmup" style="margin-top:9px;">Seated sprints only. Staying seated keeps load off the forefoot, this is your power/metabolic stimulus without the impact-loading concerns of running sprints.</div>
+    <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+      <button class="btn brass" id="startSprintBtn">Start Sprint Set</button>
+      <span id="sprintStatus" style="font-size:12px;color:var(--text2);">Timer will auto-chain through all ${tmpl.rounds} rounds</span>
+    </div>
+    <div style="margin-top:12px;">
+      <label style="font-size:12px;color:var(--text2);">Rounds completed</label><br>
+      <input type="number" id="sprintRoundsDone" inputmode="numeric" value="${sess.sprintRoundsDone??''}" style="width:70px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px;margin-top:4px;">
+    </div>
+  </div>`;
+}
+
+function wireSprint(r, iso, tmpl){
+  const btn = document.getElementById('startSprintBtn');
+  if(btn){
+    btn.onclick = ()=>{
+      startSprintSequence(tmpl.rounds, tmpl.work, tmpl.recovery);
+      document.getElementById('sprintStatus').textContent = 'Sprint set running, follow the timer bar below';
+    };
+  }
+  const rd = document.getElementById('sprintRoundsDone');
+  if(rd){
+    rd.onchange = async ()=>{
+      const sess = await getSession(r.block, r.week, r.dayKey, iso);
+      sess.sprintRoundsDone = rd.value?parseInt(rd.value):null;
+      await saveSession(r.block, r.week, r.dayKey, iso, sess);
+    };
+  }
+}
+
+
 function wireExerciseInputs(r, phase, iso){
   document.querySelectorAll('.setrow').forEach(row=>{
     const exId = row.dataset.ex, setNum = parseInt(row.dataset.set);
@@ -660,7 +709,8 @@ function wireConditioningChecks(r, iso){
 }
 
 /* ============================== TIMER ============================== */
-let timerInterval=null, timerRemaining=0, timerRunning=false;
+let timerInterval=null, timerRemaining=0, timerRunning=false, timerOnComplete=null;
+let sprintState=null;
 const timerDisplay = ()=>document.getElementById('timerDisplay');
 const timerBar = ()=>document.getElementById('timerbar');
 const timerMode = ()=>document.getElementById('timerMode');
@@ -668,9 +718,9 @@ const timerCtx = ()=>document.getElementById('timerCtx');
 
 function fmt(s){ const m=Math.floor(s/60), sec=s%60; return `${m}:${sec<10?'0':''}${sec}`; }
 
-function startTimer(seconds, mode, ctx){
+function startTimer(seconds, mode, ctx, onComplete){
   clearInterval(timerInterval);
-  timerRemaining = seconds; timerRunning = true;
+  timerRemaining = seconds; timerRunning = true; timerOnComplete = onComplete || null;
   timerBar().classList.remove('ringing');
   timerMode().textContent = mode; timerCtx().textContent = ctx || '';
   timerDisplay().textContent = fmt(timerRemaining);
@@ -684,10 +734,32 @@ function startTimer(seconds, mode, ctx){
       timerMode().textContent = 'TIME';
       ringAlert();
       timerRunning=false;
+      const cb = timerOnComplete; timerOnComplete=null;
+      if(cb) setTimeout(cb, 400);
       return;
     }
     timerDisplay().textContent = fmt(timerRemaining);
   },1000);
+}
+
+function startSprintSequence(rounds, workSec, recSec){
+  sprintState = {round:1, rounds, workSec, recSec};
+  runSprintWork();
+}
+function runSprintWork(){
+  if(!sprintState) return;
+  startTimer(sprintState.workSec, 'SPRINT', `Round ${sprintState.round}/${sprintState.rounds} · max effort`, runSprintRecovery);
+}
+function runSprintRecovery(){
+  if(!sprintState) return;
+  if(sprintState.round>=sprintState.rounds){
+    timerMode().textContent='DONE'; timerCtx().textContent='Sprint set complete'; sprintState=null; return;
+  }
+  startTimer(sprintState.recSec, 'RECOVERY', `Round ${sprintState.round}/${sprintState.rounds} · easy spin`, ()=>{
+    if(!sprintState) return;
+    sprintState.round++;
+    runSprintWork();
+  });
 }
 
 function ringAlert(){
@@ -705,16 +777,16 @@ function ringAlert(){
 }
 
 function wireTimer(){
-  document.getElementById('chipRest').onclick = ()=>startTimer(90,'REST','Manual rest');
+  document.getElementById('chipRest').onclick = ()=>{ sprintState=null; startTimer(90,'REST','Manual rest'); };
   document.querySelectorAll('.chip[data-s]').forEach(c=>{
-    c.onclick = ()=>startTimer(parseInt(c.dataset.s), 'TRANSITION', 'Moving to next station');
+    c.onclick = ()=>{ sprintState=null; startTimer(parseInt(c.dataset.s), 'TRANSITION', 'Moving to next station'); };
   });
   document.getElementById('chipPause').onclick = (e)=>{
     timerRunning = !timerRunning;
     e.target.textContent = timerRunning? 'Pause':'Resume';
   };
   document.getElementById('chipReset').onclick = ()=>{
-    clearInterval(timerInterval); timerRunning=false; timerRemaining=0;
+    clearInterval(timerInterval); timerRunning=false; timerRemaining=0; timerOnComplete=null; sprintState=null;
     timerDisplay().textContent='0:00'; timerMode().textContent='IDLE'; timerCtx().textContent='Tap a chip to start';
     timerBar().classList.remove('ringing');
     document.getElementById('chipPause').textContent='Pause';
@@ -729,7 +801,7 @@ async function exportCSV(){
     const r = resolveDate(d);
     if(!r) continue;
     const tmpl = dayTemplate(r.block, r.dayKey);
-    if(tmpl.type!=='strength' && tmpl.type!=='conditioning') continue;
+    if(tmpl.type!=='strength' && tmpl.type!=='conditioning' && tmpl.type!=='sprint') continue;
     const iso = toISO(d);
     const sess = await sget(sessionKey(r.block, r.week, r.dayKey, iso));
     if(!sess) continue;
@@ -744,6 +816,8 @@ async function exportCSV(){
       }
     } else if(tmpl.type==='conditioning'){
       rows.push([iso, r.block, r.week, r.dayKey, 'Conditioning rounds', '', '', '', '', '', '', sess.roundsDone??'', '', '', sess.footPain??'', sess.backPain??'']);
+    } else if(tmpl.type==='sprint'){
+      rows.push([iso, r.block, r.week, r.dayKey, 'Sprint rounds', '', '', '', tmpl.work, '', '', sess.sprintRoundsDone??'', '', '', '', '']);
     }
   }
   const csv = rows.map(row=>row.map(v=>{
