@@ -2,2297 +2,772 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Block 1 — Rebuild</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Danielle · Training Log</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=JetBrains+Mono:wght@400;500;700&family=Inter+Tight:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #f4f0e8;
-  --bg-alt: #ebe5d8;
-  --ink: #1a1816;
-  --ink-soft: #4a4540;
-  --ink-faint: #8a8278;
-  --accent: #c2410c;
-  --accent-soft: #fed7aa;
-  --line: #d8d1c0;
-  --good: #166534;
-  --warn: #a16207;
-  --danger: #991b1b;
-  --serif: 'Fraunces', Georgia, serif;
-  --sans: 'Inter Tight', -apple-system, sans-serif;
-  --mono: 'JetBrains Mono', monospace;
-}
-
-* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
-html, body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family: var(--sans);
-  font-size: 16px;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  overscroll-behavior: none;
-}
-
-body {
-  padding-bottom: 140px;
-  min-height: 100vh;
-  background-image:
-    radial-gradient(circle at 20% 0%, rgba(194, 65, 12, 0.04) 0%, transparent 40%),
-    radial-gradient(circle at 80% 100%, rgba(22, 101, 52, 0.03) 0%, transparent 40%);
-}
-
-/* HEADER */
-.header {
-  padding: 24px 20px 16px;
-  border-bottom: 1px solid var(--line);
-  background: var(--bg);
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  backdrop-filter: blur(8px);
-}
-
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
-}
-
-.block-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.week-label {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
-}
-
-.title {
-  font-family: var(--serif);
-  font-weight: 400;
-  font-size: 32px;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  font-variation-settings: "opsz" 96;
-}
-
-.title em {
-  font-style: italic;
-  color: var(--accent);
-}
-
-/* DAY TABS */
-.day-tabs {
-  display: flex;
-  gap: 0;
-  padding: 0 20px;
-  margin-top: 16px;
-  border-bottom: 1px solid var(--line);
-  overflow-x: auto;
-  scrollbar-width: none;
-  background: var(--bg);
-  position: sticky;
-  top: 92px;
-  z-index: 49;
-}
-
-.day-tabs::-webkit-scrollbar { display: none; }
-
-.day-tab {
-  flex: 0 0 auto;
-  padding: 12px 12px 14px;
-  background: transparent;
-  border: none;
-  font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.03em;
-  color: var(--ink-faint);
-  cursor: pointer;
-  position: relative;
-  white-space: nowrap;
-  transition: color 0.2s;
-  min-width: 64px;
-  text-align: center;
-}
-
-.day-tab.active {
-  color: var(--ink);
-  font-weight: 600;
-}
-
-.day-tab.active::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  left: 8px;
-  right: 8px;
-  height: 2px;
-  background: var(--accent);
-}
-
-.day-tab .day-name {
-  display: block;
-}
-
-.day-tab .day-focus {
-  display: block;
-  font-size: 10px;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
-  margin-top: 2px;
-}
-
-/* MAIN CONTENT */
-.content {
-  padding: 24px 20px 40px;
-  max-width: 720px;
-  margin: 0 auto;
-}
-
-.workout-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--line);
-}
-
-.workout-title {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  font-variation-settings: "opsz" 48;
-}
-
-.workout-duration {
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-faint);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-
-/* WARMUP */
-.warmup {
-  background: var(--bg-alt);
-  padding: 16px 18px;
-  margin-bottom: 24px;
-  border-left: 3px solid var(--ink);
-  border-radius: 2px;
-}
-
-.warmup-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  margin-bottom: 8px;
-}
-
-.warmup-list {
-  list-style: none;
-  font-size: 14px;
-  color: var(--ink-soft);
-}
-
-.warmup-list li {
-  padding: 3px 0;
-  padding-left: 16px;
-  position: relative;
-}
-
-.warmup-list li::before {
-  content: '·';
-  position: absolute;
-  left: 4px;
-  color: var(--ink);
-  font-weight: 700;
-}
-
-/* BLOCK SECTION */
-.block-section {
-  margin-bottom: 28px;
-}
-
-.block-header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  margin-bottom: 12px;
-}
-
-.block-name {
-  font-family: var(--serif);
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--accent);
-  font-variation-settings: "opsz" 14;
-}
-
-.block-time {
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-faint);
-}
-
-/* EXERCISE CARD */
-.exercise {
-  background: #fbf8f0;
-  border: 1px solid var(--line);
-  border-radius: 4px;
-  padding: 16px 18px;
-  margin-bottom: 10px;
-  position: relative;
-  transition: border-color 0.2s;
-}
-
-.exercise.expanded {
-  border-color: var(--ink);
-}
-
-.exercise-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  cursor: pointer;
-  gap: 12px;
-}
-
-.exercise-title-wrap {
-  flex: 1;
-  min-width: 0;
-}
-
-.exercise-code {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--accent);
-  letter-spacing: 0.05em;
-}
-
-.exercise-name {
-  font-family: var(--serif);
-  font-size: 19px;
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.01em;
-  margin-top: 2px;
-  font-variation-settings: "opsz" 36;
-}
-
-.exercise-prescription {
-  display: flex;
-  gap: 12px;
-  margin-top: 8px;
-  flex-wrap: wrap;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--ink-soft);
-}
-
-.exercise-prescription span {
-  white-space: nowrap;
-}
-
-.exercise-prescription .rpe {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.exercise-toggle {
-  flex: 0 0 auto;
-  padding: 6px 10px;
-  background: var(--bg-alt);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  color: var(--ink-soft);
-  cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.2s;
-}
-
-.exercise.expanded .exercise-toggle {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
-}
-
-.exercise-details {
-  display: none;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px dashed var(--line);
-}
-
-.exercise.expanded .exercise-details { display: block; }
-
-.detail-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.detail-label {
-  flex: 0 0 56px;
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
-  padding-top: 2px;
-}
-
-.detail-text {
-  flex: 1;
-  color: var(--ink-soft);
-}
-
-/* SET LOGGING */
-.sets-table {
-  margin-top: 14px;
-  border-top: 1px solid var(--line);
-  padding-top: 12px;
-}
-
-.sets-header {
-  display: grid;
-  grid-template-columns: 28px 1fr 1fr 56px 56px;
-  gap: 8px;
-  padding-bottom: 6px;
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--ink-faint);
-}
-
-.set-row {
-  display: grid;
-  grid-template-columns: 28px 1fr 1fr 56px 56px;
-  gap: 8px;
-  align-items: center;
-  padding: 6px 0;
-  border-bottom: 1px solid var(--bg-alt);
-}
-
-.set-num {
-  font-family: var(--mono);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink);
-}
-
-.set-input {
-  width: 100%;
-  padding: 7px 8px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  font-family: var(--mono);
-  font-size: 13px;
-  background: var(--bg);
-  color: var(--ink);
-  -webkit-appearance: none;
-  appearance: none;
-}
-
-.set-input:focus {
-  outline: none;
-  border-color: var(--accent);
-  background: #fff;
-}
-
-.set-input::placeholder { color: var(--ink-faint); }
-
-.set-done {
-  width: 28px;
-  height: 28px;
-  border: 1.5px solid var(--line);
-  border-radius: 4px;
-  background: var(--bg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  color: transparent;
-  transition: all 0.15s;
-  margin: 0 auto;
-}
-
-.set-done.done {
-  background: var(--good);
-  border-color: var(--good);
-  color: white;
-}
-
-/* TIMER BAR (sticky bottom) */
-.timer-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--ink);
-  color: var(--bg);
-  padding: 14px 20px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  box-shadow: 0 -8px 24px rgba(0,0,0,0.15);
-  z-index: 100;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-.timer-display {
-  flex: 0 0 auto;
-  font-family: var(--mono);
-  font-size: 28px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  min-width: 78px;
-  font-variant-numeric: tabular-nums;
-}
-
-.timer-display.warning { color: #fbbf24; }
-.timer-display.done {
-  color: #fca5a5;
-  animation: pulse 0.6s ease-in-out 3;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.timer-presets {
-  flex: 1;
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.timer-preset {
-  flex: 1;
-  min-width: 0;
-  padding: 8px 6px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 3px;
-  color: var(--bg);
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.timer-preset:active { background: rgba(255,255,255,0.2); }
-
-.timer-controls {
-  display: flex;
-  gap: 6px;
-}
-
-.timer-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.2);
-  background: rgba(255,255,255,0.08);
-  color: var(--bg);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-}
-
-.timer-btn.primary {
-  background: var(--accent);
-  border-color: var(--accent);
-}
-
-.timer-btn:active { transform: scale(0.94); }
-
-/* DEAD HANG TRACKER */
-.hang-tracker {
-  margin-top: 12px;
-  padding: 12px;
-  background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 100%);
-  border-radius: 4px;
-  border-left: 3px solid var(--accent);
-}
-
-.hang-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--accent);
-  font-weight: 700;
-  margin-bottom: 6px;
-}
-
-.hang-progress {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  font-family: var(--serif);
-}
-
-.hang-current {
-  font-size: 24px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.hang-target {
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-
-.hang-bar {
-  margin-top: 8px;
-  height: 4px;
-  background: rgba(0,0,0,0.08);
-  border-radius: 2px;
-  overflow: hidden;
-}
-
-.hang-fill {
-  height: 100%;
-  background: var(--accent);
-  border-radius: 2px;
-  transition: width 0.4s ease;
-}
-
-/* WEEK NAV */
-.week-nav {
-  display: flex;
-  gap: 6px;
-  margin-top: 12px;
-}
-
-.week-btn {
-  flex: 1;
-  padding: 8px;
-  background: var(--bg-alt);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  color: var(--ink-soft);
-  cursor: pointer;
-  text-transform: uppercase;
-}
-
-.week-btn.active {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
-}
-
-/* FOOT CHECK */
-.foot-check {
-  margin-top: 24px;
-  padding: 16px 18px;
-  background: var(--bg-alt);
-  border-radius: 4px;
-  border-left: 3px solid var(--warn);
-}
-
-.foot-check-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  color: var(--warn);
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.foot-rating {
-  display: flex;
-  gap: 4px;
-  margin-top: 10px;
-}
-
-.foot-num {
-  flex: 1;
-  height: 32px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: var(--bg);
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-soft);
-  cursor: pointer;
-}
-
-.foot-num.selected {
-  background: var(--warn);
-  color: white;
-  border-color: var(--warn);
-}
-
-/* BLOCK SWITCHER */
-.header-controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 6px;
-  flex-wrap: wrap;
-}
-
-.block-switcher {
-  display: inline-flex;
-  background: var(--bg-alt);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  overflow: hidden;
-}
-
-.export-btn {
-  padding: 7px 12px;
-  background: var(--bg-alt);
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--ink);
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.15s;
-}
-
-.export-btn:active {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
-}
-
-.block-switcher button {
-  padding: 6px 12px;
-  background: transparent;
-  border: none;
-  font-family: var(--mono);
-  font-size: 10px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-soft);
-  cursor: pointer;
-}
-
-.block-switcher button.active {
-  background: var(--ink);
-  color: var(--bg);
-}
-
-/* PREVIEW MODE (BLOCK 2) */
-.preview-banner {
-  background: var(--ink);
-  color: var(--bg);
-  padding: 14px 18px;
-  border-radius: 4px;
-  margin-bottom: 20px;
-  font-size: 13px;
-  line-height: 1.5;
-}
-
-.preview-banner strong {
-  font-family: var(--serif);
-  font-style: italic;
-  font-weight: 500;
-  color: var(--accent-soft);
-}
-
-/* DELOAD INDICATOR */
-.deload-banner {
-  background: var(--good);
-  color: white;
-  padding: 12px 16px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 13px;
-}
-
-.deload-banner strong {
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-size: 11px;
-  display: block;
-  margin-bottom: 4px;
-  opacity: 0.85;
-}
-
-/* EMPTY STATE */
-.empty {
-  padding: 40px 20px;
-  text-align: center;
-  color: var(--ink-faint);
-}
-
-/* DAY TYPE STYLING */
-.day-tab[data-type="cardio"] .day-focus { color: #1e6091; }
-.day-tab[data-type="rest"] .day-focus { color: var(--ink-faint); font-style: italic; }
-.day-tab.active[data-type="cardio"]::after { background: #1e6091; }
-.day-tab.active[data-type="rest"]::after { background: var(--ink-faint); }
-
-.day-type-banner {
-  padding: 10px 14px;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
-.day-type-banner.cardio {
-  background: #dbeafe;
-  color: #1e3a8a;
-  border-left: 3px solid #1e40af;
-}
-
-.day-type-banner.rest {
-  background: var(--bg-alt);
-  color: var(--ink-soft);
-  border-left: 3px solid var(--ink-faint);
-}
-
-/* RESPONSIVE */
-@media (min-width: 768px) {
-  .content { padding: 32px 40px 60px; }
-  .timer-bar { padding: 16px 32px; }
-  .timer-display { font-size: 32px; min-width: 90px; }
-  .header { padding: 32px 40px 20px; }
-  .day-tabs { padding: 0 40px; }
-}
+  :root{
+    --bg:#1c1b19; --surface:#26241f; --surface2:#302d27; --surface3:#3a362e;
+    --border:#443f35; --text:#ece7dc; --text2:#a89f8f; --text3:#7d766a;
+    --brass:#c9922f; --brass-dim:#8a6a30;
+    --olive:#7a9b6e; --rust:#b5533c; --blue:#6f9bb8;
+    --deload:#8b6f47;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; padding-bottom:110px; -webkit-tap-highlight-color:transparent;}
+  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:.2px;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  input,button,select{font-family:inherit;}
+  header{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--border); padding:14px 16px 10px;}
+  .header-row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
+  header h1{font-size:19px; color:var(--brass); font-weight:600;}
+  header .sub{font-size:11px; color:var(--text3); margin-top:2px;}
+  .btn{background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:12.5px; cursor:pointer; white-space:nowrap;}
+  .btn:active{background:var(--surface3);}
+  .btn.brass{background:var(--brass); color:#211a0d; border-color:var(--brass); font-weight:600;}
+  .btn.small{padding:5px 9px; font-size:11px;}
+
+  /* 7-day overview strip */
+  .strip{display:flex; gap:8px; overflow-x:auto; padding:12px 16px 4px; scrollbar-width:none;}
+  .strip::-webkit-scrollbar{display:none;}
+  .strip-card{flex:0 0 auto; width:78px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:8px 6px; text-align:center; cursor:pointer;}
+  .strip-card.today{border-color:var(--brass); box-shadow:0 0 0 1px var(--brass) inset;}
+  .strip-card.selected{background:var(--surface3);}
+  .strip-card .dow{font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.5px;}
+  .strip-card .dt{font-size:12px; color:var(--text2); margin:2px 0 6px;}
+  .strip-card .type{font-size:10.5px; font-weight:600; padding:3px 4px; border-radius:5px; line-height:1.25;}
+  .tp-strength{background:rgba(201,146,47,.18); color:var(--brass);}
+  .tp-cardio{background:rgba(111,155,184,.18); color:var(--blue);}
+  .tp-cond{background:rgba(122,155,110,.18); color:var(--olive);}
+  .tp-rest{background:rgba(255,255,255,.06); color:var(--text3);}
+  .tp-review{background:rgba(181,83,60,.18); color:var(--rust);}
+  .deload-dot{display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--deload); margin-left:3px;}
+
+  /* jump nav */
+  .jumpnav{display:flex; gap:6px; padding:4px 16px 12px; flex-wrap:wrap; align-items:center;}
+  .jumpnav select{background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:7px; padding:6px 8px; font-size:12px;}
+
+  main{padding:6px 16px 20px;}
+  .day-banner{border-radius:var(--radius); padding:12px 14px; margin-bottom:12px; border:1px solid var(--border); background:var(--surface);}
+  .day-banner h2{font-size:20px;}
+  .day-banner .meta{font-size:12px; color:var(--text2); margin-top:3px;}
+  .badge{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding:2px 7px; border-radius:20px; margin-left:6px; vertical-align:middle;}
+  .badge.deload{background:var(--deload); color:#1c1b19;}
+  .badge.gated{background:var(--surface3); color:var(--text2); border:1px solid var(--border);}
+  .badge.unlocked{background:var(--olive); color:#16210f;}
+
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:10px;}
+  .card h3{font-size:15px; color:var(--text);}
+  .card .rx{font-size:11.5px; color:var(--text2); margin-top:2px;}
+  .setrow{display:grid; grid-template-columns:26px 1fr 1fr 1fr 34px; gap:6px; align-items:center; margin-top:8px;}
+  .setrow .lbl{font-size:11px; color:var(--text3);}
+  .setrow input{width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:7px 6px; font-size:14px; text-align:center;}
+  .setrow input::placeholder{color:var(--text3);}
+  .check{width:30px; height:30px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer;}
+  .check.done{background:var(--olive); border-color:var(--olive); color:#16210f;}
+  .cue{margin-top:9px; font-size:12px; background:rgba(201,146,47,.12); border:1px solid var(--brass-dim); color:var(--brass); border-radius:7px; padding:7px 9px;}
+  .warmup{font-size:12px; color:var(--text2); background:var(--surface2); border-radius:8px; padding:9px 11px; margin-bottom:10px;}
+  .finisher{font-size:12.5px; color:var(--text2); background:var(--surface2); border-radius:8px; padding:9px 11px; margin-top:2px;}
+  .finisher b{color:var(--text);}
+
+  .pain{display:flex; gap:8px; align-items:center; margin-top:6px;}
+  .pain input[type=range]{flex:1;}
+  .pain .val{font-family:'JetBrains Mono',monospace; font-size:14px; width:22px; text-align:center;}
+
+  .zone2box{font-size:13px; line-height:1.6;}
+  .zone2box .hr{font-family:'JetBrains Mono',monospace; color:var(--brass); font-size:16px;}
+  .review ul{margin:6px 0 0 18px; padding:0; font-size:13px; color:var(--text2); line-height:1.7;}
+
+  /* floating timer bar */
+  .timerbar{position:fixed; left:0; right:0; bottom:0; z-index:50; background:var(--surface2); border-top:1px solid var(--border); padding:8px 12px 10px; box-shadow:0 -4px 14px rgba(0,0,0,.35);}
+  .timerbar.ringing{background:var(--rust);}
+  .timerbar-top{display:flex; align-items:center; gap:10px;}
+  .timerbar .display{font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; color:var(--brass); min-width:70px;}
+  .timerbar.ringing .display{color:#fff;}
+  .timerbar .mode{font-size:10px; text-transform:uppercase; letter-spacing:.6px; color:var(--text3);}
+  .timerbar.ringing .mode{color:rgba(255,255,255,.8);}
+  .timerbar .ctx{font-size:11px; color:var(--text2); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .timerbar.ringing .ctx{color:rgba(255,255,255,.9);}
+  .timerbar-chips{display:flex; gap:6px; margin-top:7px; overflow-x:auto;}
+  .chip{flex:0 0 auto; background:var(--surface3); border:1px solid var(--border); color:var(--text2); border-radius:20px; padding:6px 12px; font-size:12px; cursor:pointer;}
+  .chip.pause{color:var(--text);}
+
+  footer.exportbar{padding:6px 16px 0;}
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="header-top">
-    <span class="block-label" id="blockLabel">Block 1 · Rebuild</span>
-    <span class="week-label" id="weekLabel">Week 1 of 4</span>
-  </div>
-  <h1 class="title" id="mainTitle">Strength <em>rebuild.</em></h1>
-  <div class="header-controls">
-    <div class="block-switcher">
-      <button data-block="1" class="active">Block 1</button>
-      <button data-block="2">Block 2</button>
+<header>
+  <div class="header-row">
+    <div>
+      <h1>Danielle · Training Log</h1>
+      <div class="sub" id="todayLabel"></div>
     </div>
-    <button class="export-btn" id="exportBtn" title="Download all logged data as CSV">↓ Export CSV</button>
+    <button class="btn brass" id="exportBtn">Export CSV</button>
   </div>
-  <div class="week-nav" id="weekNav"></div>
 </header>
 
-<nav class="day-tabs" id="dayTabs"></nav>
+<div class="strip" id="strip"></div>
 
-<main class="content" id="content"></main>
+<div class="jumpnav">
+  <select id="selBlock"></select>
+  <select id="selWeek"></select>
+  <select id="selDay"></select>
+  <button class="btn small" id="jumpBtn">View</button>
+</div>
 
-<div class="timer-bar">
-  <div class="timer-display" id="timerDisplay">0:00</div>
-  <div class="timer-presets">
-    <button class="timer-preset" data-time="45">0:45</button>
-    <button class="timer-preset" data-time="60">1:00</button>
-    <button class="timer-preset" data-time="75">1:15</button>
-    <button class="timer-preset" data-time="90">1:30</button>
-    <button class="timer-preset" data-time="120">2:00</button>
+<main id="main"></main>
+
+<div class="timerbar" id="timerbar">
+  <div class="timerbar-top">
+    <div class="display mono" id="timerDisplay">0:00</div>
+    <div>
+      <div class="mode" id="timerMode">IDLE</div>
+      <div class="ctx" id="timerCtx">Tap a chip to start</div>
+    </div>
   </div>
-  <div class="timer-controls">
-    <button class="timer-btn primary" id="timerToggle">▶</button>
-    <button class="timer-btn" id="timerReset">↺</button>
+  <div class="timerbar-chips">
+    <div class="chip" id="chipRest">Rest</div>
+    <div class="chip" data-s="15">15s</div>
+    <div class="chip" data-s="30">30s</div>
+    <div class="chip" data-s="45">45s</div>
+    <div class="chip" data-s="60">60s</div>
+    <div class="chip pause" id="chipPause">Pause</div>
+    <div class="chip" id="chipReset">Reset</div>
   </div>
 </div>
 
 <script>
-// ============= PROGRAM DATA =============
+/* ============================== DATA ============================== */
+/* Evidence-based inter-set rest, by exercise role:
+   main    120s — multi-joint compound at RPE 7+, full ATP-PC recovery for force output (Schoenfeld 2016, de Salles 2009)
+   power    90s — explosive/ballistic movements, lighter load but needs full CNS recovery for quality output
+   accessory 60s — single-joint/isolation, standard hypertrophy-rest recovers faster than compounds
+   grip     60s — loaded carries, similar recovery demand to accessory work
+   core     45s — anti-rotation/anti-extension holds, low systemic load
+   bodyweight 60s — unweighted compound patterns (push-up, dip, step work) */
+const REST_RULES = { main:120, power:90, accessory:60, grip:60, core:45, bodyweight:60 };
 
-const BLOCK_1 = {
-  name: "Block 1 · Rebuild",
-  subtitle: "Strength <em>rebuild.</em>",
-  weeks: 4,
-  weekRPE: ["RPE 7-8", "RPE 8", "RPE 8-9", "Deload RPE 6"],
-  days: [
-    {
-      key: "mon",
-      name: "Mon",
-      focus: "Zone 2",
-      title: "Monday · Zone 2 Walk",
-      duration: "40 min",
-      type: "cardio",
-      warmup: ["3 min easy stroll to ramp up"],
-      blocks: [
-        {
-          name: "Zone 2 Cardio",
-          time: "40 min",
-          exercises: [
-            {
-              code: "Z1",
-              name: "Treadmill Walk",
-              sets: 1, reps: "40 min", rest: "—", rpe: "—",
-              start: "Flat incline (0%), Block 1",
-              form: "Conversational pace. You can talk in full sentences but wouldn't want to sing. Heart rate roughly 60-70% max.",
-              progression: "Block 1: flat only to keep feet calm. Block 2: may add light incline."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "tue",
-      name: "Tue",
-      focus: "Squat + H-Push/Pull",
-      title: "Tuesday · Strength A",
-      duration: "35-40 min",
-      type: "strength",
-      warmup: [
-        "2 min flat treadmill walk",
-        "10 bodyweight squats",
-        "10 glute bridges",
-        "15 band pull-aparts",
-        "10 cat-cows"
-      ],
-      blocks: [
-        {
-          name: "Block A",
-          time: "15 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "Goblet Squat",
-              sets: 4, reps: "8", rest: "90s", rpe: "7-8",
-              start: "30 lb",
-              form: "Heels grounded, parallel or below, 1 sec pause at bottom.",
-              progression: "+5 lb next session if all sets at RPE ≤8."
-            },
-            {
-              code: "A2",
-              name: "DB Chest Press",
-              sets: 4, reps: "8", rest: "90s", rpe: "7-8",
-              start: "25 lb each",
-              form: "Shoulder blades pinned, elbows 45°, full lockout.",
-              progression: "+2.5 lb each next session if all sets at RPE ≤8."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "10 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Bent-Over DB Row",
-              sets: 3, reps: "10", rest: "60s", rpe: "7-8",
-              start: "22.5 lb each",
-              form: "Hinge to 45°, flat back, pull to lower ribs.",
-              progression: "+2.5 lb each next session at RPE ≤8."
-            },
-            {
-              code: "B2",
-              name: "Reverse Lunge",
-              sets: 3, reps: "8 ea leg", rest: "60s", rpe: "7-8",
-              start: "20 lb (2 DBs)",
-              form: "Step back, knee over front toe, drive through front heel, soft back foot.",
-              progression: "+5 lb when both legs hit RPE ≤8 for 2 sessions."
-            }
-          ]
-        },
-        {
-          name: "Block C",
-          time: "8 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Dead Hang (Max Hold)",
-              sets: 3, reps: "max time", rest: "90s", rpe: "—",
-              start: "16s baseline",
-              form: "Passive hang, log time on each set. This is your test day.",
-              progression: "Climbing toward 2:00 target.",
-              isHang: true
-            },
-            {
-              code: "C2",
-              name: "Half-Kneeling Pallof Press",
-              sets: 3, reps: "10 ea side", rest: "45s", rpe: "—",
-              start: "Light band",
-              form: "Anchor band chest height, press straight out, resist rotation.",
-              progression: "Step further from anchor for more tension."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "wed",
-      name: "Wed",
-      focus: "Zone 2",
-      title: "Wednesday · Zone 2 Walk",
-      duration: "40 min",
-      type: "cardio",
-      warmup: ["3 min easy stroll to ramp up"],
-      blocks: [
-        {
-          name: "Zone 2 Cardio",
-          time: "40 min",
-          exercises: [
-            {
-              code: "Z1",
-              name: "Treadmill Walk",
-              sets: 1, reps: "40 min", rest: "—", rpe: "—",
-              start: "Flat incline (0%), Block 1",
-              form: "Conversational pace. Recovery between Tuesday's lower work and Thursday's hinge day.",
-              progression: "Stay flat throughout Block 1."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "thu",
-      name: "Thu",
-      focus: "Hinge + V-Push/Pull",
-      title: "Thursday · Strength B",
-      duration: "38-42 min",
-      type: "strength",
-      warmup: [
-        "2 min flat treadmill walk",
-        "10 glute bridges",
-        "10 hip hinges (bodyweight)",
-        "10 scapular pulls (hanging)",
-        "15 band pull-aparts"
-      ],
-      blocks: [
-        {
-          name: "Block A",
-          time: "15 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "DB RDL",
-              sets: 4, reps: "8", rest: "90s", rpe: "7-8",
-              start: "25 lb each",
-              form: "Hinge at hips, soft knees, DBs slide down thighs, flat back, glutes squeeze at top. Use straps at 30+ lb.",
-              progression: "+2.5-5 lb each next session at RPE ≤8."
-            },
-            {
-              code: "A2",
-              name: "Half-Kneeling DB Press",
-              sets: 4, reps: "8 ea arm", rest: "60s", rpe: "7-8",
-              start: "15 lb",
-              form: "Press at slight angle, ribs down, no back arch. Protects L4-L5.",
-              progression: "+2.5 lb when both sides hit RPE ≤8 for 2 sessions."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "10 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Eccentric Pull-Up",
-              sets: 3, reps: "3", rest: "90s", rpe: "8",
-              start: "5-sec lower",
-              form: "Jump or step up to top, lower slowly for 5 sec, full extension at bottom. If too hard, drop to 3-sec lower.",
-              progression: "Increase lowering tempo or add reps when 3×3 at 5s feels manageable."
-            },
-            {
-              code: "B2",
-              name: "Bulgarian Split Squat",
-              sets: 3, reps: "8 ea leg", rest: "75s", rpe: "7-8",
-              start: "15 lb each (or BW)",
-              form: "Back foot on bench, front foot far enough forward that knee tracks over front foot at bottom. Drive through front heel.",
-              progression: "+5 lb when both legs hit RPE ≤8 for 2 sessions."
-            }
-          ]
-        },
-        {
-          name: "Block C",
-          time: "11 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Dead Hang (Volume)",
-              sets: 4, reps: "75% of Tue best", rest: "60s", rpe: "—",
-              start: "Sub-max time",
-              form: "Volume work. If Tuesday max was 18s, do 4 × 13s. Accumulate time at the bar.",
-              progression: "Track total time accumulated.",
-              isHang: true
-            },
-            {
-              code: "C2",
-              name: "Dead Bug",
-              sets: 3, reps: "10 ea side", rest: "30s", rpe: "—",
-              start: "BW",
-              form: "Low back pressed flat, opposite arm/leg extend slowly.",
-              progression: "Slow tempo, add light DBs in hands when easy."
-            },
-            {
-              code: "C3",
-              name: "Lateral Raise",
-              sets: 3, reps: "12", rest: "45s", rpe: "7-8",
-              start: "8-10 lb each",
-              form: "Stand tall, slight bend in elbows, raise DBs out to sides until parallel with shoulders. Lead with elbows not hands. Pause briefly at top, control the lower. No spinal load, pure shoulder work.",
-              progression: "+2.5 lb each when 3 × 12 hits RPE 7-8 cleanly. Bone density and shoulder health, no L4-L5 stress."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "fri",
-      name: "Fri",
-      focus: "Sprints",
-      title: "Friday · Sprint Session",
-      duration: "~20 min",
-      type: "cardio",
-      warmup: ["5 min easy spin to warm up"],
-      blocks: [
-        {
-          name: "Peloton Sprint Intervals",
-          time: "20 min",
-          exercises: [
-            {
-              code: "S1",
-              name: "Peloton Sprint Intervals",
-              sets: 6, reps: "30s hard / 90s easy", rest: "—", rpe: "9 on hard intervals",
-              start: "6 × 30s hard / 90s easy",
-              form: "Use Peloton (not treadmill) in Block 1 — cycling sprints have less eccentric load and faster recovery, leaving legs fresh for Sunday. Hard interval is genuinely hard, all-out for 30 seconds.",
-              progression: "Block 1 stays at 6 intervals. Treadmill sprints may return in Block 2."
-            },
-            {
-              code: "S2",
-              name: "Cool-Down",
-              sets: 1, reps: "5 min", rest: "—", rpe: "—",
-              start: "Easy spin",
-              form: "Bring heart rate down gradually before stopping.",
-              progression: "Always include."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "sat",
-      name: "Sat",
-      focus: "Rest",
-      title: "Saturday · Full Rest",
-      duration: "—",
-      type: "rest",
-      warmup: [],
-      blocks: [
-        {
-          name: "Recovery Day",
-          time: "all day",
-          exercises: [
-            {
-              code: "R1",
-              name: "Full Rest",
-              sets: 1, reps: "—", rest: "—", rpe: "—",
-              start: "No structured exercise",
-              form: "Walk to the coffee shop is fine. Errands fine. No workouts, no sprints, no Zone 2. Sunday is your hardest session of the week and you walk into it fresh.",
-              progression: "Once 3-4 weeks adapted, Saturday may become optional Zone 2."
-            },
-            {
-              code: "R2",
-              name: "Recovery Priorities",
-              sets: 1, reps: "—", rest: "—", rpe: "—",
-              start: "Sleep, hydration, protein",
-              form: "Aim for full sleep tonight. Hydrate well. Hit your protein target (~30g per meal, 3-4 meals). Take magnesium tonight if inconsistent.",
-              progression: "Track sleep quality."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "sun",
-      name: "Sun",
-      focus: "Mixed + Power",
-      title: "Sunday · Strength C",
-      duration: "50-60 min",
-      type: "strength",
-      warmup: [
-        "3 min flat treadmill walk",
-        "10 bodyweight squats",
-        "10 glute bridges",
-        "10 inchworms",
-        "15 band pull-aparts",
-        "10 marching in place"
-      ],
-      blocks: [
-        {
-          name: "Block A · Heavy Squat (run straight, no superset)",
-          time: "12 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "Goblet Squat (Heavy)",
-              sets: 4, reps: "6", rest: "2:00", rpe: "8",
-              start: "32.5 lb",
-              form: "All 4 sets through before moving on. Priority strength lift of the week.",
-              progression: "+5 lb next Sunday if all 4 sets at RPE ≤8."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "15 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Push-Up",
-              sets: 4, reps: "max -1-2", rest: "90s", rpe: "8",
-              start: "Floor or bench",
-              form: "Body straight, elbows 45°. Stop 1-2 reps short of failure. Elevate hands on bench if floor exceeds RPE 9.",
-              progression: "Floor variation when bench hits RPE 7. Decline when floor easy."
-            },
-            {
-              code: "B2",
-              name: "Single-Arm DB Row",
-              sets: 4, reps: "8 ea arm", rest: "75s", rpe: "8",
-              start: "22.5 lb",
-              form: "Flat back, pull to hip, full ROM.",
-              progression: "+2.5 lb when both arms hit RPE ≤8."
-            }
-          ]
-        },
-        {
-          name: "Block C",
-          time: "15 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Single-Leg RDL",
-              sets: 3, reps: "8 ea leg", rest: "60s", rpe: "7-8",
-              start: "12-15 lb",
-              form: "One DB on standing-leg side. Hinge from standing leg, back leg extends straight, slow and controlled.",
-              progression: "+2.5 lb when both sides at RPE ≤8."
-            },
-            {
-              code: "C2",
-              name: "Med Ball Slam",
-              sets: 4, reps: "6", rest: "60s", rpe: "—",
-              start: "Moderate ball",
-              form: "Reach overhead, slam down hard, athletic stance. Power and explosive work.",
-              progression: "Heavier ball when current feels easy."
-            },
-            {
-              code: "C3",
-              name: "Dead Hang (Active Scap Pull)",
-              sets: 3, reps: "max hold", rest: "90s", rpe: "—",
-              start: "Active position",
-              form: "Chest up, shoulder blades pulled down, body slightly hollow. Active hang trains the pull-up start.",
-              progression: "Climb max time. Harder than passive.",
-              isHang: true
-            }
-          ]
-        },
-        {
-          name: "Block D",
-          time: "9 min",
-          exercises: [
-            {
-              code: "D1",
-              name: "Farmer Carry",
-              sets: 2, reps: "40 sec", rest: "60s", rpe: "—",
-              start: "25 lb each",
-              form: "Tall posture, ribs down, walk slow and steady. Grip training.",
-              progression: "+5 lb each when 40s feels solid."
-            },
-            {
-              code: "D2",
-              name: "DB Bicep Curl",
-              sets: 3, reps: "10", rest: "45s", rpe: "8",
-              start: "12-15 lb each",
-              form: "Stand tall, elbows pinned at sides, curl with full range. Control the lower (don't drop). No swinging or torso English.",
-              progression: "+2.5 lb when 3 × 10 hits RPE 8 cleanly. Direct pull-up support, biceps drive the pulling motion."
-            }
-          ]
-        }
-      ]
-    }
-  ]
+const EX = {
+  goblet_squat:{name:'Goblet Squat',cat:'lower',unit:'lb',start:25,restType:'main'},
+  bent_row:{name:'Bent-Over Row',cat:'upper',unit:'lb',start:15,restType:'main'},
+  chest_press:{name:'Chest Press',cat:'upper',unit:'lb',start:20,restType:'main'},
+  lateral_raise:{name:'Lateral Raise',cat:'upper',unit:'lb',start:8,restType:'accessory'},
+  bicep_curl:{name:'Bicep Curl',cat:'upper',unit:'lb',start:12,restType:'accessory'},
+  db_swing:{name:'DB Swing',cat:'lower',unit:'lb',start:20,restType:'power'},
+  dead_bug:{name:'Dead Bug',cat:'core',unit:'bw',restType:'core'},
+  reverse_lunge:{name:'Reverse Lunge',cat:'lower',unit:'lb',start:15,restType:'main'},
+  sl_rdl:{name:'Single-Leg RDL',cat:'lower',unit:'lb',start:10,restType:'main'},
+  reverse_fly:{name:'Reverse Fly',cat:'upper',unit:'lb',start:8,restType:'accessory'},
+  explosive_pushup:{name:'Explosive Push-Up',cat:'upper',unit:'bw',restType:'power'},
+  pallof:{name:'Pallof Press',cat:'core',unit:'band',restType:'core'},
+  farmer_carry:{name:'Farmer Carry',cat:'grip',unit:'lb',start:25,restType:'grip'},
+  db_rdl:{name:'DB RDL',cat:'lower',unit:'lb',start:20,restType:'main'},
+  bench_dip:{name:'Bench Dip',cat:'upper',unit:'bw',restType:'bodyweight'},
+  pushup:{name:'Push-Up',cat:'upper',unit:'bw',restType:'bodyweight'},
+  side_plank:{name:'Side Plank',cat:'core',unit:'time',restType:'core'},
+  suitcase_carry:{name:'Suitcase Carry',cat:'grip',unit:'lb',start:25,restType:'grip'},
+  face_pull:{name:'Band Face Pull',cat:'upper',unit:'band',restType:'accessory'},
+  tricep_kickback:{name:'DB Tricep Kickback',cat:'upper',unit:'lb',start:8,restType:'accessory'},
+  plank:{name:'Plank',cat:'core',unit:'time',restType:'core'},
+  bosu_stepup:{name:'Bosu Step-Up',cat:'lower',unit:'bw',restType:'bodyweight'},
+  band_row:{name:'Band Row',cat:'upper',unit:'band',restType:'accessory'},
+  stepup_impact:{name:'Low Step-Up (controlled landing)',cat:'lower',unit:'bw',restType:'bodyweight'},
+  pogo:{name:'Pogo Hops in Place',cat:'lower',unit:'bw',restType:'power'},
+  sl_hop:{name:'Single-Leg Hop',cat:'lower',unit:'bw',restType:'power'},
+  broad_jump:{name:'Broad Jump Landing',cat:'lower',unit:'bw',restType:'power'},
+};
+const PROGRESSABLE = ['lb'];
+
+function E(id,sets,repsLow,repsHigh){ return {ex:id, sets, rest:REST_RULES[EX[id].restType], repsLow, repsHigh}; }
+
+const DAYS = {
+  block1:{
+    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:15},
+      list:[E('goblet_squat',3,8,10),E('bent_row',3,8,10),E('chest_press',3,8,10),
+            E('lateral_raise',3,8,10),E('bicep_curl',3,8,10),E('db_swing',3,8,10),E('dead_bug',3,10,10)],
+      finisher:'7 min circuit: DB swing / push-up / mountain climber'},
+    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:12},
+      list:[E('reverse_lunge',3,8,10),E('sl_rdl',3,8,10),E('bicep_curl',3,8,10),E('reverse_fly',3,8,10),
+            E('explosive_pushup',3,6,6),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
+      finisher:'Suitcase carry 4x30s/side'},
+    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:10},
+      list:[E('goblet_squat',3,8,10),E('bent_row',3,8,10),E('db_rdl',3,8,10),
+            E('lateral_raise',3,8,10),E('bench_dip',3,10,10),E('pushup',3,10,10)],
+      finisher:'Side plank 3x20s/side'},
+    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
+    sat:{type:'cardio', label:'Zone 2', machine:'Walk/Bike Mix', mode:'Mixed walk/bike, extended session', min:80},
+    sun:{type:'rest', label:'Rest'}
+  },
+  block2:{
+    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:20},
+      list:[E('goblet_squat',3,8,8),E('bent_row',3,8,8),E('chest_press',3,8,8),
+            E('face_pull',3,12,12),E('bicep_curl',3,8,8),E('db_swing',3,12,12),E('dead_bug',3,10,10)],
+      finisher:'7 min circuit: DB swing / push-up / mountain climber'},
+    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:15},
+      list:[E('reverse_lunge',3,8,8),E('sl_rdl',3,8,8),E('bicep_curl',3,8,8),E('reverse_fly',3,12,12),
+            E('explosive_pushup',3,6,6),E('tricep_kickback',3,12,12),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
+      finisher:null},
+    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:15},
+      list:[E('goblet_squat',3,8,8),E('bent_row',3,8,8),E('db_rdl',3,8,8),
+            E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
+      finisher:'Side plank 3x20s/side, suitcase carry 3x30s/side'},
+    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
+    sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 3 Rounds', rounds:3, restRounds:90,
+      base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
+      impact:['stepup_impact','pogo'], gateBlock:'block1'},
+    sun:{type:'rest', label:'Rest'}
+  },
+  block3:{
+    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:25},
+      list:[E('goblet_squat',3,6,8),E('bent_row',3,6,8),E('chest_press',3,6,8),
+            E('face_pull',3,12,12),E('bicep_curl',3,6,8),E('db_swing',3,12,12),E('dead_bug',3,10,10)],
+      finisher:'EMOM 5 min: odd min DB swing x12, even min mountain climbers x20'},
+    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:18},
+      list:[E('reverse_lunge',3,6,8),E('sl_rdl',3,6,8),E('bicep_curl',3,6,8),E('reverse_fly',3,12,12),
+            E('explosive_pushup',3,6,6),E('tricep_kickback',3,12,12),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
+      finisher:'EMOM 4 min: alternate farmer carry 30s / bodyweight squat x15'},
+    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:18},
+      list:[E('goblet_squat',3,6,8),E('bent_row',3,6,8),E('db_rdl',3,6,8),
+            E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
+      finisher:'Side plank + suitcase carry, then 3 min AMRAP push-up/mountain climber'},
+    tue:{type:'cardio', label:'Zone 2', machine:'Peloton Bike', mode:'Peloton bike, steady resistance', min:55},
+    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
+    sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 4 Rounds', rounds:4, restRounds:60,
+      base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
+      impact:['sl_hop','broad_jump'], gateBlock:'block2'},
+    sun:{type:'rest', label:'Rest'}
+  },
+  taper:{
+    d1:{type:'strength', label:'Light Full-Body', focus:'Squat · Row · Press (light)', hang:{type:'Max hold — retest toward 2:00',sets:2,dur:null},
+      list:[E('goblet_squat',2,8,8),E('bent_row',2,8,8),E('chest_press',2,8,8),E('dead_bug',2,10,10)], finisher:null},
+    d2:{type:'cardio', label:'Zone 2', machine:'Peloton Bike (easy)', mode:'Peloton bike, easy resistance', min:30},
+    d3:{type:'strength', label:'Light Full-Body', focus:'Lunge · RDL · Raise', hang:null,
+      list:[E('reverse_lunge',2,8,8),E('sl_rdl',2,8,8),E('lateral_raise',2,12,12),E('bicep_curl',2,10,10),E('pallof',2,10,10)], finisher:null},
+    d4:{type:'cardio', label:'Zone 2', machine:'Peloton Bike (easy)', mode:'Peloton bike, easy resistance', min:30},
+    d5:{type:'review', label:'Rest + Block Review'}
+  }
 };
 
-const BLOCK_2 = {
-  name: "Block 2 · Build",
-  subtitle: "Past pre-break. <em>Push.</em>",
-  weeks: 5,
-  weekRPE: ["RPE 7-8", "RPE 8", "RPE 8-9", "RPE 8-9", "Deload RPE 6"],
-  preview: true,
-  days: [
-    {
-      key: "mon",
-      name: "Mon",
-      focus: "Zone 2",
-      title: "Monday · Zone 2 Walk (Block 2 Preview)",
-      duration: "40-45 min",
-      type: "cardio",
-      warmup: ["3 min easy stroll"],
-      blocks: [
-        {
-          name: "Zone 2 Cardio",
-          time: "40-45 min",
-          exercises: [
-            {
-              code: "Z1",
-              name: "Treadmill Walk",
-              sets: 1, reps: "40-45 min", rest: "—", rpe: "—",
-              start: "Light incline option",
-              form: "If feet tolerated Block 1 well, may add 1-3% incline. If feet were sensitive, keep flat.",
-              progression: "Optional 5 min extension in Weeks 3-4."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "tue",
-      name: "Tue",
-      focus: "Heavy Squat",
-      title: "Tuesday · Strength A (Block 2 Preview)",
-      duration: "35-40 min",
-      type: "strength",
-      warmup: [
-        "Same as Block 1, may add scap pulls and goblet squat ramp"
-      ],
-      blocks: [
-        {
-          name: "Block A · Heavier loads, lower reps",
-          time: "15 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "DB Front-Loaded Squat",
-              sets: 4, reps: "5", rest: "2:00", rpe: "8-9",
-              start: "Load past goblet ceiling",
-              form: "Two DBs at shoulders. Lets you progress past goblet (~50 lb cap).",
-              progression: "Heavier than Block 1 max. Target true 5RM by Week 4."
-            },
-            {
-              code: "A2",
-              name: "DB Bench Press",
-              sets: 4, reps: "6", rest: "90s", rpe: "8",
-              start: "Block 1 working weight + 5 lb",
-              form: "Bench (or floor), elbows 45°. Heavier than Block 1.",
-              progression: "+2.5 lb each at RPE 8."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "10 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Bent-Over DB Row",
-              sets: 4, reps: "8", rest: "75s", rpe: "8",
-              start: "Heavier than Block 1",
-              form: "Same form, more load.",
-              progression: "+2.5 lb each at RPE 8."
-            },
-            {
-              code: "B2",
-              name: "Reverse Lunge",
-              sets: 3, reps: "8 ea leg", rest: "60s", rpe: "8",
-              start: "Block 1 max + 5 lb",
-              form: "Same form.",
-              progression: "+5 lb at RPE 8."
-            }
-          ]
-        },
-        {
-          name: "Block C · Impact returns (foot-permitting)",
-          time: "10 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Step-Ups w/ Controlled Landing",
-              sets: 2, reps: "8 ea leg", rest: "60s", rpe: "—",
-              start: "Low box (6\")",
-              form: "Step up, then step down with controlled landing. ~36 contacts/session phase 1.",
-              progression: "Higher box when ankles and feet tolerate."
-            },
-            {
-              code: "C2",
-              name: "Dead Hang (Max Hold)",
-              sets: 3, reps: "max", rest: "90s", rpe: "—",
-              start: "Block 1 ending time",
-              form: "Continue toward 2:00 goal.",
-              progression: "Climbing.",
-              isHang: true
-            },
-            {
-              code: "C3",
-              name: "Pallof Press",
-              sets: 3, reps: "10 ea side", rest: "45s", rpe: "—",
-              start: "Heavier band",
-              form: "Same form, more tension."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "wed",
-      name: "Wed",
-      focus: "Zone 2",
-      title: "Wednesday · Zone 2 Walk (Block 2 Preview)",
-      duration: "40-45 min",
-      type: "cardio",
-      warmup: ["3 min easy stroll"],
-      blocks: [
-        {
-          name: "Zone 2 Cardio",
-          time: "40-45 min",
-          exercises: [
-            {
-              code: "Z1",
-              name: "Treadmill Walk",
-              sets: 1, reps: "40-45 min", rest: "—", rpe: "—",
-              start: "Light incline option",
-              form: "Recovery between Tuesday and Thursday strength sessions.",
-              progression: "Same as Monday Zone 2."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "thu",
-      name: "Thu",
-      focus: "Heavy Hinge",
-      title: "Thursday · Strength B (Block 2 Preview)",
-      duration: "35-40 min",
-      type: "strength",
-      warmup: ["Same as Block 1"],
-      blocks: [
-        {
-          name: "Block A · Heavy hinge primary",
-          time: "15 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "DB Sumo Deadlift",
-              sets: 4, reps: "5", rest: "2:00", rpe: "8-9",
-              start: "Heavy single DB between legs",
-              form: "Wider stance, single DB held vertically between legs. Lets you load heavier than RDL because grip easier.",
-              progression: "Heavier than DB RDL ceiling. True 5RM by Week 4."
-            },
-            {
-              code: "A2",
-              name: "Half-Kneeling DB Press",
-              sets: 4, reps: "8 ea arm", rest: "60s", rpe: "8",
-              start: "Block 1 + 2.5 lb",
-              form: "Same. Still no straight overhead pressing.",
-              progression: "+2.5 lb at RPE 8."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "10 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Eccentric Pull-Up",
-              sets: 4, reps: "3", rest: "90s", rpe: "8",
-              start: "5-7 sec lower",
-              form: "Slower descent than Block 1.",
-              progression: "Toward longer eccentric or first rep of full pull-up."
-            },
-            {
-              code: "B2",
-              name: "Bulgarian Split Squat",
-              sets: 3, reps: "8 ea leg", rest: "75s", rpe: "8",
-              start: "Block 1 + 5 lb",
-              form: "Same form.",
-              progression: "+5 lb at RPE 8."
-            }
-          ]
-        },
-        {
-          name: "Block C",
-          time: "8 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Pogo Hops (Phase 1 Impact)",
-              sets: 2, reps: "10", rest: "60s", rpe: "—",
-              start: "Both feet, in place",
-              form: "Very small hops, focus on calf spring and quiet landing. Quality over height.",
-              progression: "Single-leg hops in Weeks 3-4 if feet tolerate."
-            },
-            {
-              code: "C2",
-              name: "Dead Hang (Volume)",
-              sets: 4, reps: "30s", rest: "60s", rpe: "—",
-              start: "30 sec sub-max",
-              form: "Volume work.",
-              progression: "Increase set time as Tuesday max climbs.",
-              isHang: true
-            },
-            {
-              code: "C3",
-              name: "Dead Bug w/ DB",
-              sets: 3, reps: "10 ea side", rest: "30s", rpe: "—",
-              start: "5-10 lb in hands",
-              form: "Light DB held in hands, opposite arm/leg extension."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "fri",
-      name: "Fri",
-      focus: "Sprints",
-      title: "Friday · Sprint Session (Block 2 Preview)",
-      duration: "~22 min",
-      type: "cardio",
-      warmup: ["5 min easy spin or walk"],
-      blocks: [
-        {
-          name: "Sprint Intervals",
-          time: "22 min",
-          exercises: [
-            {
-              code: "S1",
-              name: "Sprint Intervals",
-              sets: 7, reps: "30s hard / 90s easy", rest: "—", rpe: "9 on hard intervals",
-              start: "Peloton or treadmill",
-              form: "Block 2 may reintroduce treadmill sprints if foot tolerance is solid throughout Block 1. Otherwise stay on Peloton. One additional interval added.",
-              progression: "Modality choice depends on foot tolerance data."
-            },
-            {
-              code: "S2",
-              name: "Cool-Down",
-              sets: 1, reps: "5 min", rest: "—", rpe: "—",
-              start: "Easy spin or walk",
-              form: "Always.",
-              progression: "—"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "sat",
-      name: "Sat",
-      focus: "Rest",
-      title: "Saturday · Full Rest (Block 2 Preview)",
-      duration: "—",
-      type: "rest",
-      warmup: [],
-      blocks: [
-        {
-          name: "Recovery Day",
-          time: "all day",
-          exercises: [
-            {
-              code: "R1",
-              name: "Full Rest or Optional Light Movement",
-              sets: 1, reps: "—", rest: "—", rpe: "—",
-              start: "No structured exercise",
-              form: "If Block 1 went well, Saturday may convert to optional easy walk (20-30 min, very low intensity). Otherwise full rest.",
-              progression: "Listen to recovery signals."
-            },
-            {
-              code: "R2",
-              name: "Recovery Priorities",
-              sets: 1, reps: "—", rest: "—", rpe: "—",
-              start: "Sleep, hydration, protein",
-              form: "Same priorities as Block 1.",
-              progression: "Track sleep quality trend."
-            }
-          ]
-        }
-      ]
-    },
-    {
-      key: "sun",
-      name: "Sun",
-      focus: "Mixed + Power",
-      title: "Sunday · Strength C (Block 2 Preview)",
-      duration: "55-60 min",
-      type: "strength",
-      warmup: ["Same as Block 1"],
-      blocks: [
-        {
-          name: "Block A · Tempo squat (still run straight)",
-          time: "15 min",
-          exercises: [
-            {
-              code: "A1",
-              name: "Tempo Pause Goblet Squat",
-              sets: 4, reps: "6", rest: "2:00", rpe: "8",
-              start: "Lighter than Tuesday by 5-10 lb",
-              form: "3-sec descent, 2-sec pause at bottom, drive up. Builds strength out of the hole.",
-              progression: "+2.5 lb when tempo holds at RPE 8."
-            }
-          ]
-        },
-        {
-          name: "Block B",
-          time: "15 min",
-          exercises: [
-            {
-              code: "B1",
-              name: "Push-Up Variation",
-              sets: 4, reps: "max -1-2", rest: "90s", rpe: "8",
-              start: "Floor or decline",
-              form: "Move toward decline (feet on bench) when floor easy.",
-              progression: "Decline → weighted (plate on back) when bodyweight maxed."
-            },
-            {
-              code: "B2",
-              name: "Inverted Row",
-              sets: 4, reps: "8", rest: "75s", rpe: "8",
-              start: "Bar set low",
-              form: "Bar set low (use pull-up bar at low height or smith bar). Lie under, pull chest to bar. Different pulling angle.",
-              progression: "Lower the bar (more vertical body) for harder version."
-            }
-          ]
-        },
-        {
-          name: "Block C · Power",
-          time: "15 min",
-          exercises: [
-            {
-              code: "C1",
-              name: "Single-Leg RDL",
-              sets: 3, reps: "8 ea leg", rest: "60s", rpe: "8",
-              start: "Heavier than Block 1",
-              form: "Same form, more load.",
-              progression: "+2.5 lb at RPE 8."
-            },
-            {
-              code: "C2",
-              name: "Med Ball Slam",
-              sets: 4, reps: "6", rest: "60s", rpe: "—",
-              start: "Heavier ball",
-              form: "Same form, heavier implement.",
-              progression: "Heavier ball or add rotational slams."
-            },
-            {
-              code: "C3",
-              name: "Broad Jump Landing",
-              sets: 2, reps: "5", rest: "60s", rpe: "—",
-              start: "Phase 2 impact (Weeks 3-4)",
-              form: "Jump softly forward, stick the landing for 2 sec. Quality only. Foot-permitting only.",
-              progression: "Add only if feet at 0-2 throughout Block 1."
-            },
-            {
-              code: "C4",
-              name: "Dead Hang (Active Scap)",
-              sets: 3, reps: "max", rest: "90s", rpe: "—",
-              start: "Continue progression",
-              form: "Active hang. Shift to band-assisted pull-ups if 2:00 hit.",
-              progression: "If 2:00 reached → 3 × 5 band-assisted pull-ups instead.",
-              isHang: true
-            }
-          ]
-        },
-        {
-          name: "Block D",
-          time: "5 min",
-          exercises: [
-            {
-              code: "D1",
-              name: "Farmer Carry",
-              sets: 3, reps: "40 sec", rest: "60s", rpe: "—",
-              start: "+5-10 lb each from Block 1",
-              form: "Same form, heavier load.",
-              progression: "Heaviest grip work in program."
-            }
-          ]
-        }
-      ]
-    }
-  ]
+const PHASES = {
+  block1:[
+    {week:1,rpe:'6-7',rpeMax:7,repsLow:8,repsHigh:10,phase:'build'},
+    {week:2,rpe:'7-8',rpeMax:8,repsLow:8,repsHigh:8,phase:'build'},
+    {week:3,rpe:'8',rpeMax:8,repsLow:6,repsHigh:8,phase:'intensify'},
+    {week:4,rpe:'5-6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
+  ],
+  block2:[
+    {week:1,rpe:'7',rpeMax:7,repsLow:8,repsHigh:8,phase:'resume'},
+    {week:2,rpe:'7-8',rpeMax:8,repsLow:8,repsHigh:8,phase:'build'},
+    {week:3,rpe:'8-9',rpeMax:9,repsLow:6,repsHigh:8,phase:'intensify'},
+    {week:4,rpe:'6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
+  ],
+  block3:[
+    {week:1,rpe:'7-8',rpeMax:8,repsLow:6,repsHigh:8,phase:'resume'},
+    {week:2,rpe:'8',rpeMax:8,repsLow:6,repsHigh:8,phase:'build'},
+    {week:3,rpe:'8-9',rpeMax:9,repsLow:5,repsHigh:6,phase:'intensify'},
+    {week:4,rpe:'6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
+  ],
+  taper:[{week:1,rpe:'6',rpeMax:6,repsLow:8,repsHigh:8,phase:'taper'}]
 };
 
-// ============= STATE =============
-let state = {
-  currentBlock: 1,
-  currentDay: "tue",
-  currentWeek: 1,
-  log: {},
-  hangBest: 16,
-  footChecks: {}
-};
+const BLOCK_RANGES = [
+  {id:'block1', start:'2026-07-02', end:'2026-07-29', label:'Block 1 · Rebuild'},
+  {id:'block2', start:'2026-07-30', end:'2026-08-26', label:'Block 2 · Build'},
+  {id:'block3', start:'2026-08-27', end:'2026-09-23', label:'Block 3 · Intensify'},
+  {id:'taper',  start:'2026-09-24', end:'2026-09-28', label:'Taper'}
+];
 
-// Storage helpers
-async function loadState() {
-  try {
-    const result = await window.storage.get('workout_state');
-    if (result?.value) {
-      const saved = JSON.parse(result.value);
-      state = { ...state, ...saved };
-    }
-  } catch (e) {
-    // First load, no saved state
-  }
-}
+const TIMELINE = [];
+['block1','block2','block3','taper'].forEach(b=>PHASES[b].forEach(p=>TIMELINE.push({block:b, week:p.week, ...p})));
 
-async function saveState() {
-  try {
-    await window.storage.set('workout_state', JSON.stringify(state));
-  } catch (e) {
-    console.error('Save failed:', e);
-  }
-}
+const DOW_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
+const DOW_LABEL = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-// ============= TIMER =============
-let timerSeconds = 0;
-let timerTotal = 0;
-let timerInterval = null;
-let timerRunning = false;
+/* ============================== DATE HELPERS ============================== */
+function toISO(d){ return d.toISOString().slice(0,10); }
+function parseISO(s){ const [y,m,dd]=s.split('-').map(Number); return new Date(y,m-1,dd); }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
 
-const timerDisplay = document.getElementById('timerDisplay');
-const timerToggle = document.getElementById('timerToggle');
-const timerReset = document.getElementById('timerReset');
-
-function formatTime(s) {
-  const m = Math.floor(s / 60);
-  const sec = s % 60;
-  return `${m}:${sec.toString().padStart(2, '0')}`;
-}
-
-function updateTimerDisplay() {
-  timerDisplay.textContent = formatTime(Math.max(0, timerSeconds));
-  timerDisplay.classList.remove('warning', 'done');
-  if (timerSeconds <= 0 && timerTotal > 0) {
-    timerDisplay.classList.add('done');
-  } else if (timerSeconds <= 5 && timerTotal > 0) {
-    timerDisplay.classList.add('warning');
-  }
-}
-
-function startTimer(seconds) {
-  if (seconds !== undefined) {
-    timerSeconds = seconds;
-    timerTotal = seconds;
-  }
-  if (!timerRunning && timerSeconds > 0) {
-    timerRunning = true;
-    timerToggle.textContent = '❚❚';
-    timerInterval = setInterval(() => {
-      timerSeconds--;
-      updateTimerDisplay();
-      if (timerSeconds <= 0) {
-        clearInterval(timerInterval);
-        timerRunning = false;
-        timerToggle.textContent = '▶';
-        // Vibrate if supported
-        if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+function resolveDate(date){
+  const iso = toISO(date);
+  for(const b of BLOCK_RANGES){
+    if(iso>=b.start && iso<=b.end){
+      const start = parseISO(b.start);
+      const diffDays = Math.round((date-start)/86400000);
+      if(b.id==='taper'){
+        const idx = Math.min(4, Math.max(0, diffDays));
+        return {block:'taper', week:1, dayKey:'d'+(idx+1), label:'Taper Day '+(idx+1), blockLabel:b.label};
       }
-    }, 1000);
-  } else if (timerRunning) {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    timerToggle.textContent = '▶';
+      const week = Math.min(4, Math.floor(diffDays/7)+1);
+      const dayKey = DOW_KEYS[date.getDay()];
+      return {block:b.id, week, dayKey, label:DOW_LABEL[date.getDay()], blockLabel:b.label};
+    }
+  }
+  return null;
+}
+
+function phaseFor(block,week){ return PHASES[block].find(p=>p.week===week); }
+function dayTemplate(block,dayKey){ return DAYS[block][dayKey]; }
+
+/* ============================== STORAGE ============================== */
+const cache = {};
+async function sget(key){
+  if(cache[key]!==undefined) return cache[key];
+  try{ const r = await window.storage.get(key); const v = r? JSON.parse(r.value): null; cache[key]=v; return v; }
+  catch(e){ cache[key]=null; return null; }
+}
+async function sset(key,val){ cache[key]=val; try{ await window.storage.set(key, JSON.stringify(val)); }catch(e){ console.error('storage set failed', e); } }
+
+function sessionKey(block,week,dayKey,iso){ return `log:${block}:w${week}:${dayKey}:${iso}`; }
+function exStateKey(exId){ return `exstate:${exId}`; }
+
+async function getExState(exId){
+  return (await sget(exStateKey(exId))) || {currentTarget:null, lastWeight:null, lastReps:null, lastRPE:null, preIntensifyWeight:null, reason:''};
+}
+async function setExState(exId, state){ await sset(exStateKey(exId), state); }
+
+async function getSession(block,week,dayKey,iso){
+  return (await sget(sessionKey(block,week,dayKey,iso))) || {exercises:{}, footPain:null, backPain:null};
+}
+async function saveSession(block,week,dayKey,iso,sess){ await sset(sessionKey(block,week,dayKey,iso), sess); }
+
+/* ============================== PROGRESSION ENGINE ============================== */
+function roundToIncrement(v, cat){
+  const inc = cat==='lower' ? 5 : 2.5;
+  return Math.round(v/inc)*inc;
+}
+
+function computeNextTarget(exId, loggedWeight, loggedReps, loggedRPE, curPhaseObj, nextPhaseObj, exState){
+  const cat = EX[exId].cat;
+  if(!nextPhaseObj){
+    return {target:loggedWeight, reason:'End of program. Hold at this weight pending Block 4 planning.'};
+  }
+  if(nextPhaseObj.phase==='deload'){
+    const t = roundToIncrement(loggedWeight*0.825, cat);
+    return {target:t, reason:`Deload next: load cut ~17% from ${loggedWeight}lb.`};
+  }
+  if(curPhaseObj.phase==='deload' && nextPhaseObj.phase!=='deload'){
+    const t = exState.preIntensifyWeight || roundToIncrement(loggedWeight*1.18, cat);
+    return {target:t, reason: exState.preIntensifyWeight
+      ? `Resuming post-deload at your last intensification-week weight (${t}lb).`
+      : `Resuming post-deload. No prior intensification weight on file, estimated at ${t}lb — adjust if that's off.`};
+  }
+  const rpeMax = curPhaseObj.rpeMax;
+  if(loggedReps>=curPhaseObj.repsHigh && loggedRPE<=rpeMax){
+    const inc = cat==='lower'?5:2.5;
+    const t = loggedWeight+inc;
+    return {target:t, reason:`Hit top of range (${loggedReps}) at RPE ${loggedRPE}, add ${inc}lb next time.`};
+  }
+  if(loggedRPE>rpeMax){
+    return {target:loggedWeight, reason:`RPE ${loggedRPE} ran above the ${curPhaseObj.rpe} target, hold ${loggedWeight}lb next time.`};
+  }
+  return {target:loggedWeight, reason:`Reps under top of range, repeat ${loggedWeight}lb before progressing.`};
+}
+
+async function logSet(exId, block, week, weight, reps, rpe){
+  const exState = await getExState(exId);
+  const curPhase = phaseFor(block, week);
+  const tIdx = TIMELINE.findIndex(t=>t.block===block && t.week===week);
+  const nextPhaseEntry = TIMELINE[tIdx+1] || null;
+  exState.lastWeight = weight; exState.lastReps = reps; exState.lastRPE = rpe;
+  if(curPhase.phase==='intensify') exState.preIntensifyWeight = weight;
+  const {target, reason} = computeNextTarget(exId, weight, reps, rpe, curPhase, nextPhaseEntry, exState);
+  exState.currentTarget = target; exState.reason = reason;
+  await setExState(exId, exState);
+  return {target, reason};
+}
+
+/* ============================== FOOT PAIN GATE ============================== */
+async function blockFootDataClean(block){
+  const range = BLOCK_RANGES.find(b=>b.id===block);
+  if(!range) return null;
+  const template = DAYS[block];
+  const strengthDays = Object.keys(template).filter(k=>template[k].type==='strength');
+  let start = parseISO(range.start), end = parseISO(range.end);
+  let found=false, allClean=true;
+  for(let d=new Date(start); d<=end; d=addDays(d,1)){
+    const dow = DOW_KEYS[d.getDay()];
+    if(!strengthDays.includes(dow)) continue;
+    const r = resolveDate(d);
+    if(!r) continue;
+    const sess = await sget(sessionKey(r.block, r.week, r.dayKey, toISO(d)));
+    if(sess && sess.footPain!=null){ found=true; if(sess.footPain>2) allClean=false; }
+  }
+  if(!found) return null;
+  return allClean;
+}
+
+/* ============================== RENDER: 7-DAY STRIP ============================== */
+let selectedDate = new Date();
+
+async function renderStrip(){
+  const strip = document.getElementById('strip');
+  strip.innerHTML='';
+  const today = new Date(); today.setHours(0,0,0,0);
+  for(let i=0;i<7;i++){
+    const d = addDays(today, i);
+    const r = resolveDate(d);
+    const card = document.createElement('div');
+    card.className = 'strip-card' + (i===0?' today':'') + (toISO(d)===toISO(selectedDate)?' selected':'');
+    let typeClass='tp-rest', typeLabel='—', deload=false;
+    if(r){
+      const tmpl = dayTemplate(r.block, r.dayKey);
+      const phase = phaseFor(r.block, r.week);
+      deload = phase && phase.phase==='deload';
+      if(tmpl.type==='strength'){typeClass='tp-strength'; typeLabel=tmpl.focus;}
+      else if(tmpl.type==='cardio'){typeClass='tp-cardio'; typeLabel=tmpl.machine;}
+      else if(tmpl.type==='conditioning'){typeClass='tp-cond'; typeLabel=tmpl.focus;}
+      else if(tmpl.type==='review'){typeClass='tp-review'; typeLabel='Review';}
+      else {typeClass='tp-rest'; typeLabel='Rest';}
+    }
+    card.innerHTML = `<div class="dow">${DOW_LABEL[d.getDay()]}</div>
+      <div class="dt mono">${d.getMonth()+1}/${d.getDate()}</div>
+      <div class="type ${typeClass}">${typeLabel}${deload?'<span class="deload-dot"></span>':''}</div>`;
+    card.onclick = ()=>{ selectedDate = d; renderAll(); };
+    strip.appendChild(card);
   }
 }
 
-function resetTimer() {
-  clearInterval(timerInterval);
-  timerRunning = false;
-  timerSeconds = 0;
-  timerTotal = 0;
-  timerToggle.textContent = '▶';
-  updateTimerDisplay();
+/* ============================== JUMP NAV ============================== */
+function populateJumpNav(){
+  const selBlock = document.getElementById('selBlock');
+  selBlock.innerHTML = BLOCK_RANGES.map(b=>`<option value="${b.id}">${b.label}</option>`).join('');
+  const r = resolveDate(selectedDate) || {block:'block1'};
+  selBlock.value = r.block;
+  populateWeekDay();
+  selBlock.onchange = populateWeekDay;
+  document.getElementById('jumpBtn').onclick = ()=>{
+    const block = selBlock.value, week = document.getElementById('selWeek').value, dayKey = document.getElementById('selDay').value;
+    // find a real date matching this block/week/dayKey for logging context
+    const range = BLOCK_RANGES.find(b=>b.id===block);
+    let start = parseISO(range.start);
+    if(block==='taper'){
+      const idx = parseInt(dayKey.replace('d',''))-1;
+      selectedDate = addDays(start, idx);
+    } else {
+      const wk = parseInt(week);
+      let found=null;
+      for(let i=0;i<28;i++){
+        const d = addDays(start, (wk-1)*7 + i);
+        if(DOW_KEYS[d.getDay()]===dayKey){ found=d; break; }
+      }
+      selectedDate = found || start;
+    }
+    renderAll();
+  };
 }
-
-document.querySelectorAll('.timer-preset').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const time = parseInt(btn.dataset.time);
-    clearInterval(timerInterval);
-    timerRunning = false;
-    timerSeconds = time;
-    timerTotal = time;
-    updateTimerDisplay();
-    startTimer();
-  });
-});
-
-timerToggle.addEventListener('click', () => startTimer());
-timerReset.addEventListener('click', resetTimer);
-
-// ============= RENDER =============
-
-function getCurrentProgram() {
-  return state.currentBlock === 1 ? BLOCK_1 : BLOCK_2;
-}
-
-function renderHeader() {
-  const program = getCurrentProgram();
-  document.getElementById('blockLabel').textContent = program.name;
-  document.getElementById('weekLabel').textContent = `Week ${state.currentWeek} of ${program.weeks}`;
-  document.getElementById('mainTitle').innerHTML = program.subtitle;
-
-  // Block switcher
-  document.querySelectorAll('.block-switcher button').forEach(btn => {
-    btn.classList.toggle('active', parseInt(btn.dataset.block) === state.currentBlock);
-  });
-
-  // Week nav
-  const weekNav = document.getElementById('weekNav');
-  weekNav.innerHTML = '';
-  for (let i = 1; i <= program.weeks; i++) {
-    const btn = document.createElement('button');
-    btn.className = 'week-btn' + (i === state.currentWeek ? ' active' : '');
-    const isDeload = (program.name === BLOCK_1.name && i === 4) || (program.name === BLOCK_2.name && i === 5);
-    btn.innerHTML = `W${i}<br><span style="opacity:0.6;font-size:9px">${isDeload ? 'DELOAD' : program.weekRPE[i-1].replace('RPE ', '')}</span>`;
-    btn.addEventListener('click', () => {
-      state.currentWeek = i;
-      saveState();
-      renderAll();
-    });
-    weekNav.appendChild(btn);
+function populateWeekDay(){
+  const block = document.getElementById('selBlock').value;
+  const selWeek = document.getElementById('selWeek');
+  const selDay = document.getElementById('selDay');
+  if(block==='taper'){
+    selWeek.innerHTML = `<option value="1">Taper week</option>`;
+    selDay.innerHTML = ['d1','d2','d3','d4','d5'].map((k,i)=>`<option value="${k}">Day ${i+1} · ${DAYS.taper[k].label}</option>`).join('');
+  } else {
+    selWeek.innerHTML = PHASES[block].map(p=>`<option value="${p.week}">Week ${p.week}${p.phase==='deload'?' (deload)':''}</option>`).join('');
+    selDay.innerHTML = ['mon','tue','wed','thu','fri','sat','sun'].map(k=>`<option value="${k}">${DOW_LABEL[DOW_KEYS.indexOf(k)]} · ${DAYS[block][k].label}</option>`).join('');
   }
 }
 
-function renderDayTabs() {
-  const program = getCurrentProgram();
-  const tabs = document.getElementById('dayTabs');
-  tabs.innerHTML = '';
-  program.days.forEach(day => {
-    const btn = document.createElement('button');
-    btn.className = 'day-tab' + (day.key === state.currentDay ? ' active' : '');
-    btn.setAttribute('data-type', day.type || 'strength');
-    btn.innerHTML = `<span class="day-name">${day.name}</span><span class="day-focus">${day.focus}</span>`;
-    btn.addEventListener('click', () => {
-      state.currentDay = day.key;
-      saveState();
-      renderAll();
-    });
-    tabs.appendChild(btn);
-  });
-}
-
-function getLogKey(blockNum, weekNum, dayKey, exCode, setIdx, field) {
-  return `b${blockNum}_w${weekNum}_${dayKey}_${exCode}_s${setIdx}_${field}`;
-}
-
-function renderContent() {
-  const program = getCurrentProgram();
-  const day = program.days.find(d => d.key === state.currentDay) || program.days[0];
-  const content = document.getElementById('content');
-  const isDeload = (state.currentBlock === 1 && state.currentWeek === 4) || (state.currentBlock === 2 && state.currentWeek === 5);
+/* ============================== RENDER: MAIN DAY VIEW ============================== */
+async function renderMain(){
+  const main = document.getElementById('main');
+  const r = resolveDate(selectedDate);
+  if(!r){ main.innerHTML = '<div class="card">Outside the current 3-month plan.</div>'; return; }
+  const tmpl = dayTemplate(r.block, r.dayKey);
+  const phase = phaseFor(r.block, r.week);
+  const iso = toISO(selectedDate);
+  const sess = await getSession(r.block, r.week, r.dayKey, iso);
 
   let html = '';
+  const deloadBadge = phase && phase.phase==='deload' ? '<span class="badge deload">Deload</span>' : '';
+  let heading = tmpl.label, subLabel = '';
+  if(tmpl.type==='strength'){ heading = tmpl.focus; subLabel = tmpl.label; }
+  else if(tmpl.type==='cardio'){ heading = tmpl.machine; subLabel = 'Zone 2'; }
+  else if(tmpl.type==='conditioning'){ heading = tmpl.focus; subLabel = tmpl.label; }
+  html += `<div class="day-banner"><h2>${heading}${deloadBadge}</h2>
+    <div class="meta">${subLabel?subLabel+' · ':''}${r.blockLabel} · ${DOW_LABEL[selectedDate.getDay()]} ${selectedDate.getMonth()+1}/${selectedDate.getDate()}${phase?' · RPE target '+phase.rpe:''}</div></div>`;
 
-  // Preview banner for Block 2
-  if (program.preview) {
-    html += `<div class="preview-banner">
-      <strong>Preview only.</strong> Block 2 unlocks after Block 1 Week 4 is complete and foot tolerance confirmed. Loads, exercises, and impact phase depend on Block 1 outcomes.
+  if(tmpl.type==='strength'){
+    if(tmpl.hang){
+      html += `<div class="warmup">Warm-up: band pull-aparts x15, bosu single-leg foot doming 2x20s/side, dead hang — ${tmpl.hang.type}${tmpl.hang.dur?`: ${tmpl.hang.sets}x${tmpl.hang.dur}s`:` (${tmpl.hang.sets} sets)`}.</div>`;
+    } else {
+      html += `<div class="warmup">Warm-up: band pull-aparts x15, light bodyweight movement prep.</div>`;
+    }
+    for(const item of tmpl.list){
+      html += await renderExerciseCard(item, r, phase, sess, iso);
+    }
+    if(tmpl.finisher){
+      html += `<div class="finisher"><b>Finisher:</b> ${tmpl.finisher}</div>`;
+    }
+    html += renderPainLog(sess);
+  } else if(tmpl.type==='cardio'){
+    html += `<div class="card zone2box"><h3>${tmpl.min} min</h3>
+      <div>${tmpl.mode}</div>
+      <div style="margin-top:8px;">Target heart rate: <span class="hr mono">106–124 bpm</span> (Zone 2, age 44)</div>
+      <div style="margin-top:4px; color:var(--text2); font-size:12px;">5 min warm-up, main effort in range, 5 min cool-down.</div></div>`;
+  } else if(tmpl.type==='conditioning'){
+    html += await renderConditioning(tmpl, r, sess, iso);
+    html += renderPainLog(sess);
+  } else if(tmpl.type==='review'){
+    html += `<div class="card review"><h3>Block Review</h3>
+      <ul>
+        <li>Run Data Review Protocol: RPE alignment, progression rate, stalled lifts, foot pain trend, dead hang trajectory, missed sessions</li>
+        <li>Confirm current dead hang best against the 2:00 target</li>
+        <li>Confirm whether Phase 2 impact tolerance supports further progression next block</li>
+        <li>Revisit the calf-work question flagged in the Block 3 audit</li>
+      </ul></div>`;
+  } else {
+    html += `<div class="card">Full rest. No training scheduled.</div>`;
+  }
+
+  main.innerHTML = html;
+  wireExerciseInputs(r, phase, iso);
+  wirePainLog(r, phase, iso);
+  wireConditioningChecks(r, iso);
+}
+
+async function renderExerciseCard(item, r, phase, sess, iso){
+  const info = EX[item.ex];
+  const exState = await getExState(item.ex);
+  const progressable = PROGRESSABLE.includes(info.unit);
+  let repsLow = item.repsLow, repsHigh = item.repsHigh;
+  if(phase && phase.phase!=='taper' && progressable){ /* main lifts follow week phase rep range */ }
+  const sets = (phase && phase.phase==='deload') ? Math.max(2, item.sets-1) : item.sets;
+  let targetWeight = exState.currentTarget || info.start || null;
+  const rxWeight = progressable ? (targetWeight? `${targetWeight}lb target` : 'log your starting weight') : (info.unit==='time'?`${item.repsLow}s hold`:'bodyweight');
+
+  let rows = '';
+  for(let s=1;s<=sets;s++){
+    const logged = (sess.exercises[item.ex] && sess.exercises[item.ex][s-1]) || {};
+    rows += `<div class="setrow" data-ex="${item.ex}" data-set="${s}">
+      <div class="lbl mono">${s}</div>
+      <input type="number" inputmode="decimal" placeholder="${progressable?'lb':'—'}" class="wIn" value="${logged.weight??''}" ${progressable?'':'disabled'}>
+      <input type="number" inputmode="numeric" placeholder="reps/${repsLow}-${repsHigh}" class="rIn" value="${logged.reps??''}">
+      <input type="number" inputmode="numeric" placeholder="RPE" class="pIn" value="${logged.rpe??''}" min="1" max="10">
+      <div class="check ${logged.done?'done':''}" data-role="check">${logged.done?'✓':''}</div>
     </div>`;
   }
-
-  // Deload banner
-  if (isDeload) {
-    html += `<div class="deload-banner">
-      <strong>Deload week</strong>
-      Loads drop 15-20% from Week 3. RPE 6 (4+ reps in tank). No max hangs, no eccentric pull-ups, sprint cut to 4×30s. Aim for +30 min sleep nightly. Should feel easy, that's the point.
-    </div>`;
-  }
-
-  // Day type banner
-  if (day.type === 'cardio') {
-    html += `<div class="day-type-banner cardio">Cardio Day · Zone 2 Walk or Sprint</div>`;
-  } else if (day.type === 'rest') {
-    html += `<div class="day-type-banner rest">Rest Day · No Structured Training</div>`;
-  }
-
-  // Workout meta
-  html += `<div class="workout-meta">
-    <div class="workout-title">${day.title}</div>
-    <div class="workout-duration">${day.duration}</div>
+  const cue = (progressable && exState.reason) ? `<div class="cue">${exState.reason}</div>` : '';
+  return `<div class="card" data-exwrap="${item.ex}" data-rest="${item.rest}">
+    <h3>${info.name}</h3>
+    <div class="rx">${sets}×${repsLow===repsHigh?repsLow:repsLow+'-'+repsHigh} · rest ${item.rest}s · ${rxWeight}${phase?` · RPE ${phase.rpe}`:''}</div>
+    ${rows}
+    ${cue}
   </div>`;
-
-  // Warm-up (only if there is one)
-  if (day.warmup && day.warmup.length > 0) {
-    html += `<div class="warmup">
-      <div class="warmup-label">Warm-Up · 3-7 min</div>
-      <ul class="warmup-list">${day.warmup.map(w => `<li>${w}</li>`).join('')}</ul>
-    </div>`;
-  }
-
-  // Blocks
-  day.blocks.forEach(block => {
-    html += `<div class="block-section">
-      <div class="block-header">
-        <span class="block-name">${block.name}</span>
-        <span class="block-time">${block.time}</span>
-      </div>`;
-
-    block.exercises.forEach(ex => {
-      const exId = `ex_${state.currentBlock}_${state.currentWeek}_${day.key}_${ex.code}`;
-      html += `<div class="exercise" id="${exId}">
-        <div class="exercise-header" data-toggle="${exId}">
-          <div class="exercise-title-wrap">
-            <div class="exercise-code">${ex.code}</div>
-            <div class="exercise-name">${ex.name}</div>
-            <div class="exercise-prescription">
-              <span>${ex.sets} × ${ex.reps}</span>
-              <span>·</span>
-              <span>Rest ${ex.rest}</span>
-              ${ex.rpe !== "—" ? `<span>·</span><span class="rpe">RPE ${ex.rpe}</span>` : ''}
-            </div>
-          </div>
-          <button class="exercise-toggle">Log</button>
-        </div>
-        <div class="exercise-details">
-          <div class="detail-row">
-            <div class="detail-label">Start</div>
-            <div class="detail-text">${ex.start}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Form</div>
-            <div class="detail-text">${ex.form}</div>
-          </div>
-          <div class="detail-row">
-            <div class="detail-label">Progress</div>
-            <div class="detail-text">${ex.progression}</div>
-          </div>
-          ${renderSetsTable(ex, day.key)}
-          ${ex.isHang ? renderHangTracker() : ''}
-        </div>
-      </div>`;
-    });
-
-    html += `</div>`;
-  });
-
-  // Foot check (only on strength days)
-  if (day.type === 'strength') {
-    html += renderFootCheck(day.key);
-  }
-
-  content.innerHTML = html;
-
-  // Attach handlers
-  attachExerciseHandlers();
-  attachSetHandlers();
-  if (day.type === 'strength') {
-    attachFootCheckHandlers(day.key);
-  }
 }
 
-function renderSetsTable(ex, dayKey) {
-  // Parse rest period to seconds for auto-start timer
-  const restSeconds = parseRestToSeconds(ex.rest);
-
-  let rows = `<div class="sets-table">
-    <div class="sets-header">
-      <span>#</span>
-      <span>Weight</span>
-      <span>Reps</span>
-      <span>RPE</span>
-      <span>✓</span>
-    </div>`;
-
-  for (let i = 1; i <= ex.sets; i++) {
-    const wKey = getLogKey(state.currentBlock, state.currentWeek, dayKey, ex.code, i, 'weight');
-    const rKey = getLogKey(state.currentBlock, state.currentWeek, dayKey, ex.code, i, 'reps');
-    const rpeKey = getLogKey(state.currentBlock, state.currentWeek, dayKey, ex.code, i, 'rpe');
-    const dKey = getLogKey(state.currentBlock, state.currentWeek, dayKey, ex.code, i, 'done');
-
-    const w = state.log[wKey] || '';
-    const r = state.log[rKey] || '';
-    const rpe = state.log[rpeKey] || '';
-    const done = state.log[dKey];
-
-    const weightPlaceholder = ex.isHang ? 'sec' : 'lb';
-    const repsPlaceholder = ex.isHang ? '—' : 'reps';
-    const isLastSet = i === ex.sets;
-
-    rows += `<div class="set-row">
-      <span class="set-num">${i}</span>
-      <input class="set-input" type="number" inputmode="decimal" placeholder="${weightPlaceholder}" data-key="${wKey}" value="${w}">
-      <input class="set-input" type="text" inputmode="numeric" placeholder="${repsPlaceholder}" data-key="${rKey}" value="${r}" ${ex.isHang ? 'disabled style="opacity:0.4"' : ''}>
-      <input class="set-input" type="number" inputmode="decimal" placeholder="—" data-key="${rpeKey}" value="${rpe}" ${ex.rpe === "—" ? 'disabled style="opacity:0.4"' : ''}>
-      <button class="set-done ${done ? 'done' : ''}" data-key="${dKey}" data-rest="${restSeconds}" data-last="${isLastSet}">${done ? '✓' : ''}</button>
-    </div>`;
-  }
-
-  rows += `</div>`;
-  return rows;
+function renderPainLog(sess){
+  return `<div class="card"><h3>Foot &amp; Back Check</h3>
+    <div class="pain"><span style="width:46px;font-size:12px;color:var(--text2)">Foot</span>
+      <input type="range" id="footPain" min="0" max="10" value="${sess.footPain??0}"><span class="val mono" id="footVal">${sess.footPain??0}</span></div>
+    <div class="pain"><span style="width:46px;font-size:12px;color:var(--text2)">Back</span>
+      <input type="range" id="backPain" min="0" max="10" value="${sess.backPain??0}"><span class="val mono" id="backVal">${sess.backPain??0}</span></div>
+    <div style="font-size:11px;color:var(--text3);margin-top:5px;">Above 4 means message before the next session, don't push through.</div>
+  </div>`;
 }
 
-function parseRestToSeconds(restStr) {
-  if (!restStr || restStr === '—') return 0;
-  // Handle formats: "90s", "60s", "75s", "2:00", "1:30"
-  const colonMatch = restStr.match(/(\d+):(\d+)/);
-  if (colonMatch) {
-    return parseInt(colonMatch[1]) * 60 + parseInt(colonMatch[2]);
+async function renderConditioning(tmpl, r, sess, iso){
+  const clean = await blockFootDataClean(tmpl.gateBlock);
+  let badge, exList, note;
+  if(clean===true){
+    badge = '<span class="badge unlocked">Impact unlocked</span>';
+    exList = tmpl.impact.concat(tmpl.base.filter(e=>e!=='bosu_stepup'));
+    note = tmpl.gateBlock==='block1'
+      ? 'Phase 1 reintroduction is live: low step-ups with controlled landings + pogo hops, based on clean foot pain data from Block 1.'
+      : 'Phase 2 reintroduction is live: single-leg hops + broad jump landings, based on clean foot pain data from Block 2.';
+  } else if(clean===false){
+    badge = '<span class="badge gated">Impact gated</span>';
+    exList = tmpl.base;
+    note = `Foot pain logged above 2 during ${tmpl.gateBlock==='block1'?'Block 1':'Block 2'} strength days. Staying on the non-impact circuit until a clean stretch shows up.`;
+  } else {
+    badge = '<span class="badge gated">Impact gated — no data yet</span>';
+    exList = tmpl.base;
+    note = `No foot pain data logged yet for ${tmpl.gateBlock==='block1'?'Block 1':'Block 2'} strength days. Defaulting to the non-impact circuit until that's on record.`;
   }
-  const secondsMatch = restStr.match(/(\d+)s/);
-  if (secondsMatch) {
-    return parseInt(secondsMatch[1]);
-  }
-  const minutesMatch = restStr.match(/(\d+)\s*min/);
-  if (minutesMatch) {
-    return parseInt(minutesMatch[1]) * 60;
-  }
-  return 0;
-}
-
-function renderHangTracker() {
-  const pct = Math.min(100, (state.hangBest / 120) * 100);
-  return `<div class="hang-tracker">
-    <div class="hang-label">Dead Hang Progression → 2:00</div>
-    <div class="hang-progress">
-      <span class="hang-current">${formatTime(state.hangBest)}</span>
-      <span class="hang-target">best · target 2:00</span>
+  let rows = exList.map(id=>`<li>${EX[id].name}</li>`).join('');
+  return `<div class="card"><h3>Conditioning ${badge}</h3>
+    <div class="rx">${tmpl.rounds} rounds, rest ${tmpl.restRounds}s between rounds</div>
+    <ol style="margin:8px 0 0 18px; padding:0; font-size:13px; color:var(--text2); line-height:1.7;">${rows}</ol>
+    <div class="cue" style="margin-top:10px;">${note}</div>
+    <div style="margin-top:10px;">
+      <label style="font-size:12px;color:var(--text2);">Rounds completed</label><br>
+      <input type="number" id="roundsDone" inputmode="numeric" value="${sess.roundsDone??''}" style="width:70px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px;margin-top:4px;">
     </div>
-    <div class="hang-bar"><div class="hang-fill" style="width: ${pct}%"></div></div>
   </div>`;
 }
 
-function renderFootCheck(dayKey) {
-  const fcKey = `fc_${state.currentBlock}_${state.currentWeek}_${dayKey}`;
-  const current = state.footChecks[fcKey];
-  let html = `<div class="foot-check">
-    <div class="foot-check-label">Foot Pain Check · Morning After</div>
-    <div style="font-size:13px;color:var(--ink-soft)">Rate 0-10 the morning after this session. ≤2 proceed normally. 3-4 hold loads. 5+ stop and reassess.</div>
-    <div class="foot-rating">`;
-  for (let i = 0; i <= 10; i++) {
-    html += `<button class="foot-num ${current === i ? 'selected' : ''}" data-fc="${fcKey}" data-val="${i}">${i}</button>`;
-  }
-  html += `</div></div>`;
-  return html;
-}
-
-function attachExerciseHandlers() {
-  document.querySelectorAll('.exercise-header').forEach(header => {
-    header.addEventListener('click', (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON') return;
-      const targetId = header.dataset.toggle;
-      document.getElementById(targetId)?.classList.toggle('expanded');
-    });
-  });
-
-  document.querySelectorAll('.exercise-toggle').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const card = btn.closest('.exercise');
-      card.classList.toggle('expanded');
-    });
-  });
-}
-
-function attachSetHandlers() {
-  document.querySelectorAll('.set-input').forEach(input => {
-    input.addEventListener('input', (e) => {
-      const key = input.dataset.key;
-      state.log[key] = input.value;
-
-      // Track hang best if this is a hang exercise weight field
-      if (key.includes('_C1_') || key.includes('_C3_') || key.includes('_C4_')) {
-        if (key.endsWith('_weight')) {
-          const val = parseFloat(input.value);
-          // Only update if this is from a hang exercise (we'd need to look up exercise)
-          // Simpler: update from any field tagged as hang via UI signal
+/* ============================== WIRING ============================== */
+function wireExerciseInputs(r, phase, iso){
+  document.querySelectorAll('.setrow').forEach(row=>{
+    const exId = row.dataset.ex, setNum = parseInt(row.dataset.set);
+    const wIn = row.querySelector('.wIn'), rIn = row.querySelector('.rIn'), pIn = row.querySelector('.pIn');
+    const check = row.querySelector('[data-role=check]');
+    check.onclick = async ()=>{
+      const done = !check.classList.contains('done');
+      check.classList.toggle('done', done);
+      check.textContent = done? '✓' : '';
+      const sess = await getSession(r.block, r.week, r.dayKey, iso);
+      sess.exercises[exId] = sess.exercises[exId] || [];
+      sess.exercises[exId][setNum-1] = {
+        weight: wIn.value?parseFloat(wIn.value):null,
+        reps: rIn.value?parseFloat(rIn.value):null,
+        rpe: pIn.value?parseFloat(pIn.value):null,
+        done
+      };
+      await saveSession(r.block, r.week, r.dayKey, iso, sess);
+      if(done){
+        const restSec = parseInt(row.closest('.card').dataset.rest) || 60;
+        startTimer(restSec, 'REST', `${EX[exId].name} · set ${setNum} · ${restSec}s`);
+        if(PROGRESSABLE.includes(EX[exId].unit) && wIn.value && rIn.value && pIn.value){
+          const {reason} = await logSet(exId, r.block, r.week, parseFloat(wIn.value), parseFloat(rIn.value), parseFloat(pIn.value));
+          const wrap = document.querySelector(`[data-exwrap="${exId}"]`);
+          let cue = wrap.querySelector('.cue');
+          if(!cue){ cue = document.createElement('div'); cue.className='cue'; wrap.appendChild(cue); }
+          cue.textContent = reason;
         }
       }
-      saveState();
-    });
-
-    input.addEventListener('blur', () => {
-      // Update hang best on blur for hang exercises
-      checkHangProgress();
-    });
-  });
-
-  document.querySelectorAll('.set-done').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const key = btn.dataset.key;
-      const wasNotDone = !state.log[key];
-      state.log[key] = !state.log[key];
-      btn.classList.toggle('done');
-      btn.textContent = state.log[key] ? '✓' : '';
-      saveState();
-
-      // Auto-start rest timer when checking a set OFF as done (going from undone to done)
-      // Don't start if it's the last set of the exercise (no need to rest before next exercise transition unless user wants to)
-      if (wasNotDone) {
-        const restSeconds = parseInt(btn.dataset.rest);
-        const isLast = btn.dataset.last === 'true';
-        if (restSeconds > 0) {
-          // Always start the rest timer, even on last set (you still rest before next exercise)
-          clearInterval(timerInterval);
-          timerRunning = false;
-          timerSeconds = restSeconds;
-          timerTotal = restSeconds;
-          updateTimerDisplay();
-          startTimer();
-          // Brief visual confirmation on the timer bar
-          flashTimerBar();
-        }
-      }
-    });
+    };
   });
 }
 
-function flashTimerBar() {
-  const bar = document.querySelector('.timer-bar');
-  if (!bar) return;
-  bar.style.transition = 'background-color 0.3s';
-  bar.style.backgroundColor = 'var(--accent)';
-  setTimeout(() => {
-    bar.style.backgroundColor = '';
-  }, 300);
+function wirePainLog(r, phase, iso){
+  const foot = document.getElementById('footPain'), back = document.getElementById('backPain');
+  if(!foot) return;
+  const footVal = document.getElementById('footVal'), backVal = document.getElementById('backVal');
+  const save = async ()=>{
+    const sess = await getSession(r.block, r.week, r.dayKey, iso);
+    sess.footPain = parseInt(foot.value); sess.backPain = parseInt(back.value);
+    await saveSession(r.block, r.week, r.dayKey, iso, sess);
+  };
+  foot.oninput = ()=>{ footVal.textContent = foot.value; save(); };
+  back.oninput = ()=>{ backVal.textContent = back.value; save(); };
 }
 
-function checkHangProgress() {
-  // Find all hang exercise weight fields and update hangBest
-  const program = getCurrentProgram();
-  let bestThisWeek = state.hangBest;
-  program.days.forEach(day => {
-    day.blocks.forEach(block => {
-      block.exercises.forEach(ex => {
-        if (ex.isHang) {
-          for (let i = 1; i <= ex.sets; i++) {
-            const k = getLogKey(state.currentBlock, state.currentWeek, day.key, ex.code, i, 'weight');
-            const v = parseFloat(state.log[k]);
-            if (!isNaN(v) && v > bestThisWeek) {
-              bestThisWeek = v;
-            }
-          }
-        }
-      });
-    });
+function wireConditioningChecks(r, iso){
+  const rd = document.getElementById('roundsDone');
+  if(!rd) return;
+  rd.onchange = async ()=>{
+    const sess = await getSession(r.block, r.week, r.dayKey, iso);
+    sess.roundsDone = rd.value?parseInt(rd.value):null;
+    await saveSession(r.block, r.week, r.dayKey, iso, sess);
+  };
+}
+
+/* ============================== TIMER ============================== */
+let timerInterval=null, timerRemaining=0, timerRunning=false;
+const timerDisplay = ()=>document.getElementById('timerDisplay');
+const timerBar = ()=>document.getElementById('timerbar');
+const timerMode = ()=>document.getElementById('timerMode');
+const timerCtx = ()=>document.getElementById('timerCtx');
+
+function fmt(s){ const m=Math.floor(s/60), sec=s%60; return `${m}:${sec<10?'0':''}${sec}`; }
+
+function startTimer(seconds, mode, ctx){
+  clearInterval(timerInterval);
+  timerRemaining = seconds; timerRunning = true;
+  timerBar().classList.remove('ringing');
+  timerMode().textContent = mode; timerCtx().textContent = ctx || '';
+  timerDisplay().textContent = fmt(timerRemaining);
+  timerInterval = setInterval(()=>{
+    if(!timerRunning) return;
+    timerRemaining--;
+    if(timerRemaining<=0){
+      clearInterval(timerInterval);
+      timerDisplay().textContent = '0:00';
+      timerBar().classList.add('ringing');
+      timerMode().textContent = 'TIME';
+      ringAlert();
+      timerRunning=false;
+      return;
+    }
+    timerDisplay().textContent = fmt(timerRemaining);
+  },1000);
+}
+
+function ringAlert(){
+  try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]); }catch(e){}
+  try{
+    const ctx = new (window.AudioContext||window.webkitAudioContext)();
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(0.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
+    o.start();
+    o.stop(ctx.currentTime+0.9);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.85);
+  }catch(e){}
+}
+
+function wireTimer(){
+  document.getElementById('chipRest').onclick = ()=>startTimer(90,'REST','Manual rest');
+  document.querySelectorAll('.chip[data-s]').forEach(c=>{
+    c.onclick = ()=>startTimer(parseInt(c.dataset.s), 'TRANSITION', 'Moving to next station');
   });
-  if (bestThisWeek > state.hangBest) {
-    state.hangBest = bestThisWeek;
-    saveState();
-    // Re-render hang tracker
-    document.querySelectorAll('.hang-current').forEach(el => el.textContent = formatTime(state.hangBest));
-    document.querySelectorAll('.hang-fill').forEach(el => {
-      el.style.width = Math.min(100, (state.hangBest / 120) * 100) + '%';
-    });
-  }
+  document.getElementById('chipPause').onclick = (e)=>{
+    timerRunning = !timerRunning;
+    e.target.textContent = timerRunning? 'Pause':'Resume';
+  };
+  document.getElementById('chipReset').onclick = ()=>{
+    clearInterval(timerInterval); timerRunning=false; timerRemaining=0;
+    timerDisplay().textContent='0:00'; timerMode().textContent='IDLE'; timerCtx().textContent='Tap a chip to start';
+    timerBar().classList.remove('ringing');
+    document.getElementById('chipPause').textContent='Pause';
+  };
 }
 
-function attachFootCheckHandlers(dayKey) {
-  document.querySelectorAll('.foot-num').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.dataset.fc;
-      const val = parseInt(btn.dataset.val);
-      state.footChecks[key] = val;
-      document.querySelectorAll(`.foot-num[data-fc="${key}"]`).forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
-      saveState();
-    });
-  });
-}
-
-function renderAll() {
-  renderHeader();
-  renderDayTabs();
-  renderContent();
-}
-
-// Block switcher
-document.querySelectorAll('.block-switcher button').forEach(btn => {
-  btn.addEventListener('click', () => {
-    state.currentBlock = parseInt(btn.dataset.block);
-    state.currentWeek = 1;
-    state.currentDay = 'tue';
-    saveState();
-    renderAll();
-  });
-});
-
-// CSV EXPORT
-function exportCSV() {
-  const rows = [];
-  // Header row
-  rows.push([
-    'block',
-    'week',
-    'day',
-    'day_name',
-    'exercise_code',
-    'exercise_name',
-    'set_number',
-    'weight_lb',
-    'reps_or_seconds',
-    'rpe',
-    'completed',
-    'prescribed_sets',
-    'prescribed_reps',
-    'prescribed_rest',
-    'prescribed_rpe',
-    'is_hang_exercise'
-  ]);
-
-  // Iterate both blocks, all weeks, all days, all exercises, all sets
-  const blocks = [
-    { num: 1, program: BLOCK_1 },
-    { num: 2, program: BLOCK_2 }
-  ];
-
-  blocks.forEach(({ num, program }) => {
-    for (let week = 1; week <= program.weeks; week++) {
-      program.days.forEach(day => {
-        day.blocks.forEach(block => {
-          block.exercises.forEach(ex => {
-            for (let setIdx = 1; setIdx <= ex.sets; setIdx++) {
-              const wKey = getLogKey(num, week, day.key, ex.code, setIdx, 'weight');
-              const rKey = getLogKey(num, week, day.key, ex.code, setIdx, 'reps');
-              const rpeKey = getLogKey(num, week, day.key, ex.code, setIdx, 'rpe');
-              const dKey = getLogKey(num, week, day.key, ex.code, setIdx, 'done');
-
-              const weight = state.log[wKey] || '';
-              const reps = state.log[rKey] || '';
-              const rpe = state.log[rpeKey] || '';
-              const done = state.log[dKey] ? 'yes' : 'no';
-
-              // Only include rows where at least one field has data, OR include all rows
-              // Including all rows is more useful for tracking what's planned vs done
-              const hasData = weight || reps || rpe || state.log[dKey];
-
-              rows.push([
-                num,
-                week,
-                day.key,
-                day.name,
-                ex.code,
-                ex.name,
-                setIdx,
-                weight,
-                reps,
-                rpe,
-                done,
-                ex.sets,
-                ex.reps,
-                ex.rest,
-                ex.rpe,
-                ex.isHang ? 'yes' : 'no'
-              ]);
-            }
-          });
+/* ============================== CSV EXPORT ============================== */
+async function exportCSV(){
+  const rows = [['date','block','week','day','exercise','set','prescribed_reps_low','prescribed_reps_high','rest_s','rpe_target','weight','reps','rpe','done','foot_pain','back_pain']];
+  const start = parseISO('2026-07-02'), end = parseISO('2026-09-28');
+  for(let d=new Date(start); d<=end; d=addDays(d,1)){
+    const r = resolveDate(d);
+    if(!r) continue;
+    const tmpl = dayTemplate(r.block, r.dayKey);
+    if(tmpl.type!=='strength' && tmpl.type!=='conditioning') continue;
+    const iso = toISO(d);
+    const sess = await sget(sessionKey(r.block, r.week, r.dayKey, iso));
+    if(!sess) continue;
+    const phase = phaseFor(r.block, r.week);
+    if(tmpl.type==='strength'){
+      for(const item of tmpl.list){
+        const logs = sess.exercises[item.ex] || [];
+        logs.forEach((l,i)=>{
+          if(!l) return;
+          rows.push([iso, r.block, r.week, r.dayKey, EX[item.ex].name, i+1, item.repsLow, item.repsHigh, item.rest, phase?phase.rpe:'', l.weight??'', l.reps??'', l.rpe??'', l.done?1:0, sess.footPain??'', sess.backPain??'']);
         });
-      });
-    }
-  });
-
-  // Add foot check rows separately
-  rows.push([]); // blank row separator
-  rows.push(['FOOT CHECKS']);
-  rows.push(['block', 'week', 'day', 'pain_rating']);
-  Object.keys(state.footChecks).forEach(key => {
-    // key format: fc_{block}_{week}_{day}
-    const parts = key.split('_');
-    if (parts[0] === 'fc') {
-      rows.push([parts[1], parts[2], parts[3], state.footChecks[key]]);
-    }
-  });
-
-  // Add hang best
-  rows.push([]);
-  rows.push(['HANG PROGRESS']);
-  rows.push(['metric', 'value']);
-  rows.push(['current_best_seconds', state.hangBest]);
-  rows.push(['target_seconds', 120]);
-  rows.push(['progress_pct', Math.round((state.hangBest / 120) * 100)]);
-
-  // Convert to CSV string
-  const csv = rows.map(row => {
-    return row.map(cell => {
-      if (cell === null || cell === undefined) return '';
-      const str = String(cell);
-      // Quote if contains comma, quote, or newline
-      if (str.includes(',') || str.includes('"') || str.includes('\n')) {
-        return '"' + str.replace(/"/g, '""') + '"';
       }
-      return str;
-    }).join(',');
-  }).join('\n');
-
-  // Generate filename with current date
-  const now = new Date();
-  const dateStr = now.toISOString().split('T')[0];
-  const filename = `workout_log_${dateStr}.csv`;
-
-  // Trigger download
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.setAttribute('href', url);
-  link.setAttribute('download', filename);
-  link.style.visibility = 'hidden';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-
-  // Visual confirmation
-  const btn = document.getElementById('exportBtn');
-  if (btn) {
-    const originalText = btn.textContent;
-    btn.textContent = '✓ Downloaded';
-    setTimeout(() => { btn.textContent = originalText; }, 2000);
+    } else if(tmpl.type==='conditioning'){
+      rows.push([iso, r.block, r.week, r.dayKey, 'Conditioning rounds', '', '', '', '', '', '', sess.roundsDone??'', '', '', sess.footPain??'', sess.backPain??'']);
+    }
   }
+  const csv = rows.map(row=>row.map(v=>{
+    const s = String(v??''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
+  }).join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `training-log-${toISO(new Date())}.csv`;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
 }
 
-document.getElementById('exportBtn').addEventListener('click', exportCSV);
+/* ============================== INIT ============================== */
+async function renderAll(){
+  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
+  await renderStrip();
+  await renderMain();
+}
 
-// Init
-(async () => {
-  await loadState();
-
-  // Default to today's day of week on first load
-  if (!state._initialized) {
-    const dayMap = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
-    const today = new Date().getDay();
-    state.currentDay = dayMap[today];
-    state._initialized = true;
-    await saveState();
-  }
-
-  updateTimerDisplay();
-  renderAll();
-})();
+document.getElementById('exportBtn').onclick = exportCSV;
+wireTimer();
+populateJumpNav();
+renderAll();
 </script>
-
 </body>
 </html>
