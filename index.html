@@ -1,846 +1,728 @@
+
+Block1 app · HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Danielle · Training Log</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Block 1 · Rebuild</title>
 <style>
-  :root{
-    --bg:#1c1b19; --surface:#26241f; --surface2:#302d27; --surface3:#3a362e;
-    --border:#443f35; --text:#ece7dc; --text2:#a89f8f; --text3:#7d766a;
-    --brass:#c9922f; --brass-dim:#8a6a30;
-    --olive:#7a9b6e; --rust:#b5533c; --blue:#6f9bb8;
-    --deload:#8b6f47;
-    --radius:10px;
+  :root {
+    --bg: #0f1419;
+    --surface: #1a2129;
+    --surface-2: #222c36;
+    --line: #2c3742;
+    --text: #e8edf2;
+    --muted: #8b97a3;
+    --faint: #5c6772;
+    --teal: #7dd3c0;
+    --teal-dim: #3f5f5a;
+    --blue: #6aa9e9;
+    --amber: #f2c14e;
+    --purple: #b088f2;
+    --warn: #f2a65a;
+    --ok: #7dd3a0;
+    --danger: #e88a8a;
+    --radius: 12px;
   }
-  *{box-sizing:border-box;}
-  body{margin:0; background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; padding-bottom:110px; -webkit-tap-highlight-color:transparent;}
-  h1,h2,h3{font-family:'Fraunces',serif; margin:0; letter-spacing:.2px;}
-  .mono{font-family:'JetBrains Mono',monospace;}
-  input,button,select{font-family:inherit;}
-  header{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1px solid var(--border); padding:14px 16px 10px;}
-  .header-row{display:flex; justify-content:space-between; align-items:center; gap:10px;}
-  header h1{font-size:19px; color:var(--brass); font-weight:600;}
-  header .sub{font-size:11px; color:var(--text3); margin-top:2px;}
-  .btn{background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:8px 12px; font-size:12.5px; cursor:pointer; white-space:nowrap;}
-  .btn:active{background:var(--surface3);}
-  .btn.brass{background:var(--brass); color:#211a0d; border-color:var(--brass); font-weight:600;}
-  .btn.small{padding:5px 9px; font-size:11px;}
-
-  /* 7-day overview strip */
-  .strip{display:flex; gap:8px; overflow-x:auto; padding:12px 16px 4px; scrollbar-width:none;}
-  .strip::-webkit-scrollbar{display:none;}
-  .strip-card{flex:0 0 auto; width:78px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:8px 6px; text-align:center; cursor:pointer;}
-  .strip-card.today{border-color:var(--brass); box-shadow:0 0 0 1px var(--brass) inset;}
-  .strip-card.selected{background:var(--surface3);}
-  .strip-card .dow{font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.5px;}
-  .strip-card .dt{font-size:12px; color:var(--text2); margin:2px 0 6px;}
-  .strip-card .type{font-size:10.5px; font-weight:600; padding:3px 4px; border-radius:5px; line-height:1.25;}
-  .strip-card .dur{font-size:10px; color:var(--text3); margin-top:4px;}
-  .tp-strength{background:rgba(201,146,47,.18); color:var(--brass);}
-  .tp-cardio{background:rgba(111,155,184,.18); color:var(--blue);}
-  .tp-sprint{background:rgba(181,83,60,.22); color:#e08468;}
-  .tp-cond{background:rgba(122,155,110,.18); color:var(--olive);}
-  .tp-rest{background:rgba(255,255,255,.06); color:var(--text3);}
-  .tp-review{background:rgba(181,83,60,.18); color:var(--rust);}
-  .deload-dot{display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--deload); margin-left:3px;}
-
-  /* jump nav */
-  .jumpnav{display:flex; gap:6px; padding:4px 16px 12px; flex-wrap:wrap; align-items:center;}
-  .jumpnav select{background:var(--surface2); color:var(--text); border:1px solid var(--border); border-radius:7px; padding:6px 8px; font-size:12px;}
-
-  main{padding:6px 16px 20px;}
-  .day-banner{border-radius:var(--radius); padding:12px 14px; margin-bottom:12px; border:1px solid var(--border); background:var(--surface);}
-  .day-banner h2{font-size:20px;}
-  .day-banner .meta{font-size:12px; color:var(--text2); margin-top:3px;}
-  .badge{display:inline-block; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; padding:2px 7px; border-radius:20px; margin-left:6px; vertical-align:middle;}
-  .badge.deload{background:var(--deload); color:#1c1b19;}
-  .badge.gated{background:var(--surface3); color:var(--text2); border:1px solid var(--border);}
-  .badge.unlocked{background:var(--olive); color:#16210f;}
-
-  .card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:12px 14px; margin-bottom:10px;}
-  .card h3{font-size:15px; color:var(--text);}
-  .card .rx{font-size:11.5px; color:var(--text2); margin-top:2px;}
-  .setrow{display:grid; grid-template-columns:26px 1fr 1fr 1fr 34px; gap:6px; align-items:center; margin-top:8px;}
-  .setrow .lbl{font-size:11px; color:var(--text3);}
-  .setrow input{width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:7px 6px; font-size:14px; text-align:center;}
-  .setrow input::placeholder{color:var(--text3);}
-  .check{width:30px; height:30px; border-radius:7px; border:1px solid var(--border); background:var(--surface2); display:flex; align-items:center; justify-content:center; font-size:15px; cursor:pointer;}
-  .check.done{background:var(--olive); border-color:var(--olive); color:#16210f;}
-  .cue{margin-top:9px; font-size:12px; background:rgba(201,146,47,.12); border:1px solid var(--brass-dim); color:var(--brass); border-radius:7px; padding:7px 9px;}
-  .warmup{font-size:12px; color:var(--text2); background:var(--surface2); border-radius:8px; padding:9px 11px; margin-bottom:10px;}
-  .finisher{font-size:12.5px; color:var(--text2); background:var(--surface2); border-radius:8px; padding:9px 11px; margin-top:2px;}
-  .finisher b{color:var(--text);}
-
-  .pain{display:flex; gap:8px; align-items:center; margin-top:6px;}
-  .pain input[type=range]{flex:1;}
-  .pain .val{font-family:'JetBrains Mono',monospace; font-size:14px; width:22px; text-align:center;}
-
-  .zone2box{font-size:13px; line-height:1.6;}
-  .zone2box .hr{font-family:'JetBrains Mono',monospace; color:var(--brass); font-size:16px;}
-  .review ul{margin:6px 0 0 18px; padding:0; font-size:13px; color:var(--text2); line-height:1.7;}
-
-  /* floating timer bar */
-  .timerbar{position:fixed; left:0; right:0; bottom:0; z-index:50; background:var(--surface2); border-top:1px solid var(--border); padding:8px 12px 10px; box-shadow:0 -4px 14px rgba(0,0,0,.35);}
-  .timerbar.ringing{background:var(--rust);}
-  .timerbar-top{display:flex; align-items:center; gap:10px;}
-  .timerbar .display{font-family:'JetBrains Mono',monospace; font-size:26px; font-weight:700; color:var(--brass); min-width:70px;}
-  .timerbar.ringing .display{color:#fff;}
-  .timerbar .mode{font-size:10px; text-transform:uppercase; letter-spacing:.6px; color:var(--text3);}
-  .timerbar.ringing .mode{color:rgba(255,255,255,.8);}
-  .timerbar .ctx{font-size:11px; color:var(--text2); flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .timerbar.ringing .ctx{color:rgba(255,255,255,.9);}
-  .timerbar-chips{display:flex; gap:6px; margin-top:7px; overflow-x:auto;}
-  .chip{flex:0 0 auto; background:var(--surface3); border:1px solid var(--border); color:var(--text2); border-radius:20px; padding:6px 12px; font-size:12px; cursor:pointer;}
-  .chip.pause{color:var(--text);}
-
-  footer.exportbar{padding:6px 16px 0;}
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    padding-bottom: 96px;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; }
+ 
+  header {
+    padding: 16px 16px 10px;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; z-index: 30;
+    background: var(--bg);
+  }
+  .head-row { display: flex; justify-content: space-between; align-items: baseline; }
+  .block-label { font-size: 13px; letter-spacing: .04em; color: var(--teal); font-weight: 600; text-transform: uppercase; }
+  .week-label { font-size: 13px; color: var(--muted); }
+  .week-label .deload { color: var(--warn); font-weight: 700; }
+  h1 { font-size: 22px; margin: 4px 0 12px; font-weight: 700; letter-spacing: -0.01em; }
+  h1 em { color: var(--teal); font-style: normal; }
+  .csv-btn {
+    background: var(--surface-2); color: var(--text); border: 1px solid var(--line);
+    border-radius: 8px; padding: 7px 12px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .csv-btn:active { background: var(--line); }
+ 
+  /* 7-day strip */
+  .week-strip { display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 2px; scrollbar-width: none; }
+  .week-strip::-webkit-scrollbar { display: none; }
+  .daychip {
+    flex: 1 0 auto; min-width: 66px; text-align: center; padding: 8px 6px;
+    border-radius: 10px; background: var(--surface); border: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .daychip.sel { border-color: var(--teal); background: var(--surface-2); }
+  .daychip.today .dc-day::after { content: "•"; color: var(--teal); margin-left: 3px; }
+  .dc-day { font-size: 12px; font-weight: 700; color: var(--muted); }
+  .daychip.sel .dc-day { color: var(--text); }
+  .dc-focus { font-size: 10.5px; color: var(--faint); margin-top: 3px; line-height: 1.25; min-height: 26px; }
+  .dc-dot { width: 6px; height: 6px; border-radius: 50%; margin: 5px auto 0; }
+  .t-strength { background: var(--teal); }
+  .t-cardio { background: var(--blue); }
+  .t-sprint { background: var(--amber); }
+  .t-cond { background: var(--purple); }
+  .t-rest { background: var(--faint); }
+ 
+  .week-nav { display: flex; gap: 6px; margin-top: 10px; }
+  .wk {
+    flex: 1; text-align: center; padding: 6px 0; font-size: 12.5px; font-weight: 600;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 8px; color: var(--muted); cursor: pointer;
+  }
+  .wk.sel { border-color: var(--teal); color: var(--text); }
+  .wk .badge { display: block; font-size: 9px; color: var(--warn); font-weight: 700; letter-spacing: .04em; }
+ 
+  main { padding: 14px 16px 8px; }
+ 
+  .day-head { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+  .day-title { font-size: 18px; font-weight: 700; }
+  .day-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .duration { font-size: 12.5px; color: var(--teal); font-weight: 600; white-space: nowrap; padding-top: 3px; }
+  .wk-note { font-size: 12.5px; color: var(--muted); background: var(--surface); border-left: 2px solid var(--teal-dim); padding: 7px 10px; border-radius: 6px; margin: 10px 0; }
+  .wk-note.deload { border-left-color: var(--warn); color: var(--warn); }
+ 
+  .section-label { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--faint); font-weight: 700; margin: 18px 0 8px; }
+ 
+  .warmup { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 4px 12px; }
+  .warmup .wu {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 0; border-bottom: 1px solid var(--line); font-size: 14px;
+  }
+  .warmup .wu:last-child { border-bottom: none; }
+  .warmup .wu .t { color: var(--teal); font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 600; }
+ 
+  .ex { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+  .ex.newtag { border-color: var(--teal-dim); }
+  .ex-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .ex-name { font-size: 15.5px; font-weight: 700; }
+  .ex-name .new { font-size: 9.5px; background: var(--teal-dim); color: var(--teal); padding: 2px 5px; border-radius: 5px; margin-left: 6px; vertical-align: middle; letter-spacing: .04em; font-weight: 700; }
+  .ex-rx { font-size: 12.5px; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .ex-start { font-size: 12px; color: var(--faint); margin-top: 2px; }
+  .ex-cue { font-size: 12.5px; color: var(--muted); font-style: italic; margin: 7px 0 2px; }
+  .ex-prog { font-size: 11.5px; color: var(--teal); margin-top: 4px; }
+ 
+  .sets { margin-top: 10px; }
+  .set-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .set-n { font-size: 12px; color: var(--faint); width: 26px; font-weight: 700; }
+  .set-row input[type=number], .hang-in {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--line); color: var(--text);
+    border-radius: 8px; padding: 9px 6px; font-size: 15px; text-align: center; min-width: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .set-row input:focus, .hang-in:focus { outline: none; border-color: var(--teal); }
+  .in-wrap { flex: 1; position: relative; }
+  .in-wrap .lab { position: absolute; top: -7px; left: 8px; font-size: 8.5px; color: var(--faint); background: var(--surface); padding: 0 3px; letter-spacing: .05em; text-transform: uppercase; }
+  .chk {
+    width: 40px; height: 40px; flex: 0 0 40px; border-radius: 9px; border: 1.5px solid var(--line);
+    background: var(--surface-2); color: var(--faint); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .chk.done { background: var(--teal); border-color: var(--teal); color: var(--bg); }
+ 
+  .hang-box { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; margin-bottom: 10px; }
+  .hang-title { font-size: 15.5px; font-weight: 700; }
+  .hang-title .new { font-size: 9.5px; }
+  .bar-track { height: 8px; background: var(--surface-2); border-radius: 5px; margin: 10px 0 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--teal-dim), var(--teal)); border-radius: 5px; }
+  .hang-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+  .hang-log-row { display: flex; gap: 6px; align-items: center; margin-top: 10px; }
+  .hang-log-row .chk { flex: 0 0 40px; }
+ 
+  .foot { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 12px; margin-top: 14px; }
+  .foot-title { font-size: 13.5px; font-weight: 700; }
+  .foot-scale { display: flex; gap: 6px; margin-top: 9px; }
+  .fp { flex: 1; padding: 9px 0; text-align: center; background: var(--surface-2); border: 1px solid var(--line); border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; }
+  .fp.sel { border-color: var(--teal); background: var(--teal); color: var(--bg); }
+  .fp.sel.hi { border-color: var(--danger); background: var(--danger); }
+  .foot-hint { font-size: 11.5px; color: var(--faint); margin-top: 8px; }
+ 
+  .finisher { background: var(--surface); border: 1px dashed var(--teal-dim); border-radius: var(--radius); padding: 12px; margin-top: 14px; }
+  .finisher .ex-name { color: var(--teal); }
+ 
+  .banner { border-radius: var(--radius); padding: 12px; font-size: 13px; margin-bottom: 12px; }
+  .banner.lock { background: rgba(242,166,90,.08); border: 1px solid var(--warn); color: var(--warn); }
+  .banner.info { background: var(--surface); border: 1px solid var(--line); color: var(--muted); }
+ 
+  .rest-note { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; text-align: center; }
+  .rest-note h2 { margin: 0 0 6px; font-size: 18px; }
+  .rest-note p { color: var(--muted); font-size: 13.5px; margin: 6px 0 0; }
+ 
+  /* Fixed timer */
+  .timer-bar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40;
+    background: var(--surface); border-top: 1px solid var(--line);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .timer-inner { max-width: 560px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .timer-digits { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 34px; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 92px; letter-spacing: -0.02em; }
+  .timer-digits.run { color: var(--teal); }
+  .timer-digits.zero { color: var(--amber); }
+  .timer-info { flex: 1; font-size: 11.5px; color: var(--muted); line-height: 1.3; }
+  .timer-info b { color: var(--text); font-weight: 600; display: block; font-size: 12.5px; }
+  .timer-ctrl { display: flex; gap: 8px; }
+  .tbtn { width: 46px; height: 46px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface-2); color: var(--text); font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .tbtn.primary { background: var(--teal); border-color: var(--teal); color: var(--bg); }
 </style>
 </head>
 <body>
-
-<header>
-  <div class="header-row">
-    <div>
-      <h1>Danielle · Training Log</h1>
-      <div class="sub" id="todayLabel"></div>
+<div class="wrap">
+  <header>
+    <div class="head-row">
+      <span class="block-label">Block 1 · Rebuild</span>
+      <button class="csv-btn" id="csvBtn">Export CSV</button>
     </div>
-    <button class="btn brass" id="exportBtn">Export CSV</button>
-  </div>
-</header>
-
-<div class="strip" id="strip"></div>
-
-<div class="jumpnav">
-  <select id="selBlock"></select>
-  <select id="selWeek"></select>
-  <select id="selDay"></select>
-  <button class="btn small" id="jumpBtn">View</button>
+    <h1>Strength <em>rebuild.</em></h1>
+    <div class="head-row" style="align-items:center;margin-bottom:6px;">
+      <span class="week-label" id="weekLabel"></span>
+    </div>
+    <div class="week-strip" id="weekStrip"></div>
+    <div class="week-nav" id="weekNav"></div>
+  </header>
+  <main id="main"></main>
 </div>
-
-<main id="main"></main>
-
-<div class="timerbar" id="timerbar">
-  <div class="timerbar-top">
-    <div class="display mono" id="timerDisplay">0:00</div>
-    <div>
-      <div class="mode" id="timerMode">IDLE</div>
-      <div class="ctx" id="timerCtx">Tap a chip to start</div>
+ 
+<div class="timer-bar">
+  <div class="timer-inner">
+    <div class="timer-digits" id="timerDigits">0:00</div>
+    <div class="timer-info" id="timerInfo"><b>Rest timer</b>Auto-starts when you check a set. Length is set by the exercise.</div>
+    <div class="timer-ctrl">
+      <button class="tbtn primary" id="tToggle">▶</button>
+      <button class="tbtn" id="tReset">↺</button>
     </div>
   </div>
-  <div class="timerbar-chips">
-    <div class="chip" id="chipRest">Rest</div>
-    <div class="chip" data-s="15">15s</div>
-    <div class="chip" data-s="30">30s</div>
-    <div class="chip" data-s="45">45s</div>
-    <div class="chip" data-s="60">60s</div>
-    <div class="chip pause" id="chipPause">Pause</div>
-    <div class="chip" id="chipReset">Reset</div>
-  </div>
 </div>
-
+ 
 <script>
-/* ============================== DATA ============================== */
-/* Evidence-based inter-set rest, by exercise role:
-   main    120s — multi-joint compound at RPE 7+, full ATP-PC recovery for force output (Schoenfeld 2016, de Salles 2009)
-   power    90s — explosive/ballistic movements, lighter load but needs full CNS recovery for quality output
-   accessory 60s — single-joint/isolation, standard hypertrophy-rest recovers faster than compounds
-   grip     60s — loaded carries, similar recovery demand to accessory work
-   core     45s — anti-rotation/anti-extension holds, low systemic load
-   bodyweight 60s — unweighted compound patterns (push-up, dip, step work) */
-const REST_RULES = { main:120, power:90, accessory:60, grip:60, core:45, bodyweight:60 };
-
-const EX = {
-  goblet_squat:{name:'Goblet Squat',cat:'lower',unit:'lb',start:25,restType:'main'},
-  bent_row:{name:'Bent-Over Row',cat:'upper',unit:'lb',start:15,restType:'main'},
-  chest_press:{name:'Chest Press',cat:'upper',unit:'lb',start:20,restType:'main'},
-  lateral_raise:{name:'Lateral Raise',cat:'upper',unit:'lb',start:8,restType:'accessory'},
-  bicep_curl:{name:'Bicep Curl',cat:'upper',unit:'lb',start:12,restType:'accessory'},
-  db_swing:{name:'DB Swing',cat:'lower',unit:'lb',start:20,restType:'power'},
-  dead_bug:{name:'Dead Bug',cat:'core',unit:'bw',restType:'core'},
-  reverse_lunge:{name:'Reverse Lunge',cat:'lower',unit:'lb',start:15,restType:'main'},
-  sl_rdl:{name:'Single-Leg RDL',cat:'lower',unit:'lb',start:10,restType:'main'},
-  reverse_fly:{name:'Reverse Fly',cat:'upper',unit:'lb',start:8,restType:'accessory'},
-  explosive_pushup:{name:'Explosive Push-Up',cat:'upper',unit:'bw',restType:'power'},
-  pallof:{name:'Pallof Press',cat:'core',unit:'band',restType:'core'},
-  farmer_carry:{name:'Farmer Carry',cat:'grip',unit:'lb',start:25,restType:'grip'},
-  db_rdl:{name:'DB RDL',cat:'lower',unit:'lb',start:20,restType:'main'},
-  bench_dip:{name:'Bench Dip',cat:'upper',unit:'bw',restType:'bodyweight'},
-  pushup:{name:'Push-Up',cat:'upper',unit:'bw',restType:'bodyweight'},
-  side_plank:{name:'Side Plank',cat:'core',unit:'time',restType:'core'},
-  suitcase_carry:{name:'Suitcase Carry',cat:'grip',unit:'lb',start:25,restType:'grip'},
-  face_pull:{name:'Band Face Pull',cat:'upper',unit:'band',restType:'accessory'},
-  tricep_kickback:{name:'DB Tricep Kickback',cat:'upper',unit:'lb',start:8,restType:'accessory'},
-  plank:{name:'Plank',cat:'core',unit:'time',restType:'core'},
-  bosu_stepup:{name:'Bosu Step-Up',cat:'lower',unit:'bw',restType:'bodyweight'},
-  band_row:{name:'Band Row',cat:'upper',unit:'band',restType:'accessory'},
-  stepup_impact:{name:'Low Step-Up (controlled landing)',cat:'lower',unit:'bw',restType:'bodyweight'},
-  pogo:{name:'Pogo Hops in Place',cat:'lower',unit:'bw',restType:'power'},
-  sl_hop:{name:'Single-Leg Hop',cat:'lower',unit:'bw',restType:'power'},
-  broad_jump:{name:'Broad Jump Landing',cat:'lower',unit:'bw',restType:'power'},
-};
-const PROGRESSABLE = ['lb'];
-
-function E(id,sets,repsLow,repsHigh){ return {ex:id, sets, rest:REST_RULES[EX[id].restType], repsLow, repsHigh}; }
-
-const DAYS = {
-  block1:{
-    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:15},
-      list:[E('goblet_squat',3,8,10),E('bent_row',3,8,10),E('chest_press',3,8,10),
-            E('lateral_raise',3,8,10),E('bicep_curl',3,8,10),E('db_swing',3,8,10),E('dead_bug',3,10,10)],
-      finisher:'7 min circuit: DB swing / push-up / mountain climber'},
-    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:12},
-      list:[E('reverse_lunge',3,8,10),E('sl_rdl',3,8,10),E('bicep_curl',3,8,10),E('reverse_fly',3,8,10),
-            E('explosive_pushup',3,6,6),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
-      finisher:'Suitcase carry 4x30s/side'},
-    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:10},
-      list:[E('goblet_squat',3,8,10),E('bent_row',3,8,10),E('db_rdl',3,8,10),
-            E('lateral_raise',3,8,10),E('bench_dip',3,10,10),E('pushup',3,10,10)],
-      finisher:'Side plank 3x20s/side'},
-    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:8, work:20, recovery:100},
-    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
-    sat:{type:'cardio', label:'Zone 2', machine:'Walk/Bike Mix', mode:'Mixed walk/bike, extended session', min:80},
-    sun:{type:'rest', label:'Rest'}
-  },
-  block2:{
-    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:20},
-      list:[E('goblet_squat',3,8,8),E('bent_row',3,8,8),E('chest_press',3,8,8),
-            E('face_pull',3,12,12),E('bicep_curl',3,8,8),E('db_swing',3,12,12),E('dead_bug',3,10,10)],
-      finisher:'7 min circuit: DB swing / push-up / mountain climber'},
-    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:15},
-      list:[E('reverse_lunge',3,8,8),E('sl_rdl',3,8,8),E('bicep_curl',3,8,8),E('reverse_fly',3,12,12),
-            E('explosive_pushup',3,6,6),E('tricep_kickback',3,12,12),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
-      finisher:null},
-    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:15},
-      list:[E('goblet_squat',3,8,8),E('bent_row',3,8,8),E('db_rdl',3,8,8),
-            E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
-      finisher:'Side plank 3x20s/side, suitcase carry 3x30s/side'},
-    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:9, work:20, recovery:95},
-    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
-    sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 3 Rounds', rounds:3, restRounds:90,
-      base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
-      impact:['stepup_impact','pogo'], gateBlock:'block1'},
-    sun:{type:'rest', label:'Rest'}
-  },
-  block3:{
-    mon:{type:'strength', label:'Strength A', focus:'Squat · Row · Press', hang:{type:'Max hold test',sets:3,dur:25},
-      list:[E('goblet_squat',3,6,8),E('bent_row',3,6,8),E('chest_press',3,6,8),
-            E('face_pull',3,12,12),E('bicep_curl',3,6,8),E('db_swing',3,12,12),E('dead_bug',3,10,10)],
-      finisher:'EMOM 5 min: odd min DB swing x12, even min mountain climbers x20'},
-    wed:{type:'strength', label:'Strength B', focus:'Lunge · RDL · Push', hang:{type:'Volume holds',sets:4,dur:18},
-      list:[E('reverse_lunge',3,6,8),E('sl_rdl',3,6,8),E('bicep_curl',3,6,8),E('reverse_fly',3,12,12),
-            E('explosive_pushup',3,6,6),E('tricep_kickback',3,12,12),E('pallof',3,10,10),E('farmer_carry',3,30,30)],
-      finisher:'EMOM 4 min: alternate farmer carry 30s / bodyweight squat x15'},
-    fri:{type:'strength', label:'Strength C', focus:'Squat · RDL · Dip', hang:{type:'Active scapular pull',sets:3,dur:18},
-      list:[E('goblet_squat',3,6,8),E('bent_row',3,6,8),E('db_rdl',3,6,8),
-            E('lateral_raise',3,12,12),E('bench_dip',3,10,10),E('pushup',3,10,10),E('plank',3,30,30)],
-      finisher:'Side plank + suitcase carry, then 3 min AMRAP push-up/mountain climber'},
-    tue:{type:'sprint', label:'Sprint Intervals', machine:'Peloton Bike (seated)', warmupMin:8, cooldownMin:7, rounds:10, work:25, recovery:90},
-    thu:{type:'cardio', label:'Zone 2', machine:'Incline Walk', mode:'Treadmill incline 6-8%, moderate pace', min:55},
-    sat:{type:'conditioning', label:'Conditioning', focus:'Circuit · 4 Rounds', rounds:4, restRounds:60,
-      base:['db_swing','bosu_stepup','band_row','pushup','farmer_carry'],
-      impact:['sl_hop','broad_jump'], gateBlock:'block2'},
-    sun:{type:'rest', label:'Rest'}
-  },
-  taper:{
-    d1:{type:'strength', label:'Light Full-Body', focus:'Squat · Row · Press (light)', hang:{type:'Max hold — retest toward 2:00',sets:2,dur:null},
-      list:[E('goblet_squat',2,8,8),E('bent_row',2,8,8),E('chest_press',2,8,8),E('dead_bug',2,10,10)], finisher:null},
-    d2:{type:'cardio', label:'Zone 2', machine:'Peloton Bike (easy)', mode:'Peloton bike, easy resistance', min:30},
-    d3:{type:'strength', label:'Light Full-Body', focus:'Lunge · RDL · Raise', hang:null,
-      list:[E('reverse_lunge',2,8,8),E('sl_rdl',2,8,8),E('lateral_raise',2,12,12),E('bicep_curl',2,10,10),E('pallof',2,10,10)], finisher:null},
-    d4:{type:'cardio', label:'Zone 2', machine:'Peloton Bike (easy)', mode:'Peloton bike, easy resistance', min:30},
-    d5:{type:'review', label:'Rest + Block Review'}
-  }
-};
-
-const PHASES = {
-  block1:[
-    {week:1,rpe:'6-7',rpeMax:7,repsLow:8,repsHigh:10,phase:'build'},
-    {week:2,rpe:'7-8',rpeMax:8,repsLow:8,repsHigh:8,phase:'build'},
-    {week:3,rpe:'8',rpeMax:8,repsLow:6,repsHigh:8,phase:'intensify'},
-    {week:4,rpe:'5-6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
-  ],
-  block2:[
-    {week:1,rpe:'7',rpeMax:7,repsLow:8,repsHigh:8,phase:'resume'},
-    {week:2,rpe:'7-8',rpeMax:8,repsLow:8,repsHigh:8,phase:'build'},
-    {week:3,rpe:'8-9',rpeMax:9,repsLow:6,repsHigh:8,phase:'intensify'},
-    {week:4,rpe:'6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
-  ],
-  block3:[
-    {week:1,rpe:'7-8',rpeMax:8,repsLow:6,repsHigh:8,phase:'resume'},
-    {week:2,rpe:'8',rpeMax:8,repsLow:6,repsHigh:8,phase:'build'},
-    {week:3,rpe:'8-9',rpeMax:9,repsLow:5,repsHigh:6,phase:'intensify'},
-    {week:4,rpe:'6',rpeMax:6,repsLow:8,repsHigh:10,phase:'deload'}
-  ],
-  taper:[{week:1,rpe:'6',rpeMax:6,repsLow:8,repsHigh:8,phase:'taper'}]
-};
-
-const BLOCK_RANGES = [
-  {id:'block1', start:'2026-07-02', end:'2026-07-29', label:'Block 1 · Rebuild'},
-  {id:'block2', start:'2026-07-30', end:'2026-08-26', label:'Block 2 · Build'},
-  {id:'block3', start:'2026-08-27', end:'2026-09-23', label:'Block 3 · Intensify'},
-  {id:'taper',  start:'2026-09-24', end:'2026-09-28', label:'Taper'}
+"use strict";
+ 
+// ============ CONFIG ============
+const BLOCK_START = new Date(2026, 6, 2); // Jul 2 2026, week 1 anchor
+const REST = { compound: 120, explosive: 90, accessory: 60, grip: 60, core: 45, hang: 60 };
+ 
+const WEEK_META = [
+  { rpe: "6-7", reps: "8-10", sets: 3, note: "Groove the patterns. Leave 3+ reps in the tank. Log everything.", deload: false },
+  { rpe: "7-8", reps: "8",    sets: 3, note: "Add load only where Week 1 hit all reps at RPE \u22648.", deload: false },
+  { rpe: "8",   reps: "6-8",  sets: 3, note: "Last set near-failure with clean form. This is the hard week.", deload: false },
+  { rpe: "5-6", reps: "8-10", sets: 2, note: "Deload. Drop load 15-20%, 2 sets not 3. Non-negotiable recovery.", deload: true }
 ];
-
-const TIMELINE = [];
-['block1','block2','block3','taper'].forEach(b=>PHASES[b].forEach(p=>TIMELINE.push({block:b, week:p.week, ...p})));
-
-const DOW_KEYS = ['sun','mon','tue','wed','thu','fri','sat'];
-const DOW_LABEL = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-
-/* ============================== DATE HELPERS ============================== */
-function toISO(d){ return d.toISOString().slice(0,10); }
-function parseISO(s){ const [y,m,dd]=s.split('-').map(Number); return new Date(y,m-1,dd); }
-function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
-
-function resolveDate(date){
-  const iso = toISO(date);
-  for(const b of BLOCK_RANGES){
-    if(iso>=b.start && iso<=b.end){
-      const start = parseISO(b.start);
-      const diffDays = Math.round((date-start)/86400000);
-      if(b.id==='taper'){
-        const idx = Math.min(4, Math.max(0, diffDays));
-        return {block:'taper', week:1, dayKey:'d'+(idx+1), label:'Taper Day '+(idx+1), blockLabel:b.label};
-      }
-      const week = Math.min(4, Math.floor(diffDays/7)+1);
-      const dayKey = DOW_KEYS[date.getDay()];
-      return {block:b.id, week, dayKey, label:DOW_LABEL[date.getDay()], blockLabel:b.label};
-    }
-  }
-  return null;
+ 
+// helper to build a strength exercise
+function ex(code, name, cat, repsOverride, start, cue, prog, opts) {
+  opts = opts || {};
+  return { code, name, cat, rest: REST[cat], reps: repsOverride || null, start, cue, prog,
+           isNew: !!opts.isNew, type: opts.type || "lift", perSide: !!opts.perSide };
 }
-
-function phaseFor(block,week){ return PHASES[block].find(p=>p.week===week); }
-function dayTemplate(block,dayKey){ return DAYS[block][dayKey]; }
-
-/* Expected session duration, in minutes. Cardio wired first; other day types return null until added. */
-function expectedDuration(tmpl){
-  if(tmpl.type==='cardio') return tmpl.min;
-  return null;
+ 
+// ============ WARM-UPS (timed, day-specific, non-impact, back-safe) ============
+const WU_MON = [
+  ["Easy flat walk or bike", "90s"],
+  ["Ankle dorsiflexion rocks, 8/side", "45s"],
+  ["Bodyweight deep squat, 6 reps, 2s pause", "45s"],
+  ["Band hip hinge, 10 reps", "45s"],
+  ["Band pull-apart x12 + pass-through x8", "60s"],
+  ["Dead bug, 4/side", "30s"],
+  ["Easy dead hang, 1 set", "20s"]
+];
+const WU_WED = [
+  ["Easy flat walk or bike", "90s"],
+  ["Ankle rocks 8/side + single-leg balance 20s/side", "60s"],
+  ["Single-leg hip hinge (airplane), 6/side", "45s"],
+  ["Bodyweight reverse lunge in place, 6/side", "45s"],
+  ["Band pull-apart x12 + wall slides x8", "45s"],
+  ["Scapular push-up, 8 reps", "30s"],
+  ["Dead bug, 4/side", "30s"]
+];
+const WU_FRI = [
+  ["Easy flat walk or bike", "90s"],
+  ["Ankle dorsiflexion rocks, 8/side", "45s"],
+  ["Bodyweight deep squat to stand, 6 reps", "45s"],
+  ["Band hip hinge, 10 reps", "45s"],
+  ["Band pull-apart x12 + pass-through x8", "60s"],
+  ["Scapular push-up x8 + scapular pulls on bar x5", "60s"],
+  ["Dead bug, 4/side", "30s"]
+];
+const WU_MIN = { mon: 6, wed: 6, fri: 6 };
+ 
+// ============ STRENGTH SESSIONS ============
+const MON = {
+  key: "mon", type: "strength", label: "Strength A",
+  focus: "Squat · Row · Press", warmup: WU_MON, wuMin: WU_MIN.mon,
+  hang: { title: "Dead Hang — Test", scheme: "3 \u00d7 max hold (cap 15s W1)", sets: 3, rest: REST.hang },
+  ex: [
+    ex("gsq", "Goblet Squat", "compound", null, "30 lb", "Drive through heel and midfoot, never the ball of the foot. Brace before you descend, 1s pause at bottom.", "+5 lb next session if all sets hit reps at target RPE."),
+    ex("row", "Bent-Over Row", "compound", null, "20 lb/hand", "Set a neutral spine and lock it. Move at the hip, pull to the lower ribs. If the low back rounds, stop.", "+5 lb next session if all sets clean."),
+    ex("cp", "DB Chest Press", "compound", null, "25 lb each", "Shoulder blades pinned to the bench, elbows at 45\u00b0, full lockout without flaring.", "+2.5 lb each side if all sets at target RPE."),
+    ex("lr", "Lateral Raise", "accessory", "10-12", "8 lb each", "Lead with the elbows, thumbs slightly down, stop at shoulder height. No shrug, no swing.", "+2.5 lb when top reps feel controlled."),
+    ex("bc", "Bicep Curl", "accessory", "10", "15 lb each", "Elbows pinned to your sides, control the lower for 2s. No body english.", "+2.5 lb when all reps clean at RPE \u22648."),
+    ex("fp", "Band Face Pull", "accessory", "15", "Light-medium band", "Pull to the eyes, elbows high and wide, squeeze the rear delts 1s. Posture work, keep it strict.", "Shorten the band / step back when 15 feels easy.", { isNew: true }),
+    ex("sw", "DB Swing", "explosive", "10", "25 lb", "Snap the hips, ribs stay down, spine neutral. A hip action, not a low-back lift. Float, don't lift.", "+5 lb when the snap stays crisp for all reps."),
+    ex("cr", "Seated DB Calf Raise", "accessory", "12-15", "20 lb on knees", "Full stretch at the bottom, 1s squeeze at the top. Push through the whole ball evenly. Stop on any neuroma buzz.", "+5 lb when 15 reps feel strong and pain-free.", { isNew: true }),
+    ex("db", "Dead Bug", "core", "8-10", "Bodyweight or 5 lb", "Low back pinned flat the entire time. Opposite arm and leg, slow. If the back lifts, shorten the range.", "Add light DB when 10/side stays pinned.", { perSide: true })
+  ],
+  finisher: "7 min circuit: DB swing x10 / bench push-up x8 / mountain climber x20. Rounds for the clock, easy transitions."
+};
+ 
+const WED = {
+  key: "wed", type: "strength", label: "Strength B",
+  focus: "Lunge · Hinge · Push", warmup: WU_WED, wuMin: WU_MIN.wed,
+  hang: { title: "Dead Hang — Volume", scheme: "4 \u00d7 12s submax", sets: 4, rest: REST.hang },
+  ex: [
+    ex("rl", "Reverse Lunge", "compound", "8", "20 lb", "Lower straight down, soft and silent back-foot touch, no push-off. Weight through the front heel.", "+5 lb when both sides hit all reps at target RPE.", { perSide: true }),
+    ex("slrdl", "Single-Leg RDL", "compound", "8-10", "15 lb each", "Neutral spine locked, hinge from the standing hip. Slow, balance-led. Back rounds means too far.", "+2.5 lb/side when balance is solid for all reps.", { perSide: true }),
+    ex("bc2", "Bicep Curl", "accessory", "10", "15 lb each", "Elbows pinned, 2s lower. Match or beat Monday's load.", "+2.5 lb when clean at RPE \u22648."),
+    ex("rf", "Reverse Fly", "accessory", "12-15", "8 lb each", "Slight hip hinge, flat back, lead with the pinkies, squeeze the rear delts. Light and strict.", "+2.5 lb when top reps stay controlled."),
+    ex("epu", "Explosive Push-Up (bench)", "explosive", "6-8", "Hands on bench", "Lower under control, drive up fast enough that the hands leave the bench. Elbows 45\u00b0, body in one line.", "Lower the bench height when reps stay explosive."),
+    ex("pp", "Pallof Press", "core", "10", "Medium band", "Press straight out, resist the twist. Ribs down, glutes on. This is anti-rotation, don't rush.", "Shorten the band when you can hold rock-steady.", { perSide: true }),
+    ex("fc", "Farmer Carry", "grip", "30-40s", "25-30 lb/hand", "Shoulders packed, tall spine, deliberate steps. Grip work, so no straps here.", "+5 lb/hand when 40s feels easy.")
+  ],
+  finisher: "Suitcase carry: 4 \u00d7 30s/side. Heavy-ish, anti-lateral-flexion, stay tall."
+};
+ 
+const FRI = {
+  key: "fri", type: "strength", label: "Strength C",
+  focus: "Squat · Hinge · Dip", warmup: WU_FRI, wuMin: WU_MIN.fri,
+  hang: { title: "Dead Hang — Active Scapular Pull", scheme: "3 \u00d7 10s, shoulders active", sets: 3, rest: REST.hang },
+  ex: [
+    ex("gsq2", "Goblet Squat", "compound", null, "30 lb", "Heel and midfoot drive, brace, 1s pause. Same groove as Monday.", "+5 lb if Monday's sets were clean at target RPE."),
+    ex("row2", "Bent-Over Row", "compound", null, "20 lb/hand", "Neutral spine locked, hip-hinged, pull to lower ribs. No low-back movement.", "+5 lb if all sets clean."),
+    ex("rdl", "DB RDL", "compound", null, "25 lb each", "Neutral spine, push the hips back, DBs graze the thighs. The hamstrings stretch, the back stays still.", "+5 lb when all reps hit target RPE. Straps if grip limits above 30 lb/hand."),
+    ex("lr2", "Lateral Raise", "accessory", "10-12", "8 lb each", "Elbows lead, stop at shoulder height, no shrug.", "+2.5 lb when controlled."),
+    ex("bd", "Bench Dip", "accessory", "8-10", "Bodyweight", "Shoulders down and back, elbows track straight back. Only descend to where the shoulders stay comfortable.", "Add feet-elevated or a DB in the lap when 10 feels easy."),
+    ex("fp2", "Band Face Pull", "accessory", "15", "Light-medium band", "Pull to the eyes, elbows high, 1s rear-delt squeeze. Posture insurance.", "Shorten the band when 15 feels easy.", { isNew: true }),
+    ex("pu", "Push-Up (bench as needed)", "accessory", "max", "Bench or floor", "Body in one line, elbows 45\u00b0, full range. Elevate hands on the bench if floor reps exceed RPE 9.", "Move to a lower surface when you clear 3 \u00d7 10 clean."),
+    ex("cr2", "Seated DB Calf Raise", "accessory", "12-15", "20 lb on knees", "Full stretch, 1s top squeeze, even pressure across the ball of the foot. Stop on any neuroma buzz.", "+5 lb when 15 feel strong and pain-free.", { isNew: true })
+  ],
+  finisher: "Side plank: 3 \u00d7 20s/side. Stack the hips, brace, breathe."
+};
+ 
+// ============ NON-STRENGTH DAYS ============
+const TUE = {
+  key: "tue", type: "sprint", label: "Sprint Intervals",
+  focus: "Peloton · seated", durationMin: 26,
+  warmup: [["Easy seated spin, building cadence", "5 min"]],
+  body: [
+    "Main set: 8 \u00d7 20s hard seated effort (RPE 9), 100s easy spin between.",
+    "Seated the whole time to keep load off the forefoot. Resistance high enough that 20s is genuinely hard.",
+    "Cool-down: 5 min easy spin."
+  ],
+  note: "Block 1 progression: 8 \u00d7 20s. Moves to 9 \u00d7 20s in Block 2, 10 \u00d7 25s in Block 3."
+};
+const THU = {
+  key: "thu", type: "cardio", label: "Zone 2 Cardio",
+  focus: "Walk or bike · flat", durationMin: 55,
+  warmup: [["Easy build to Zone 2", "5 min"]],
+  body: [
+    "45 min steady in Zone 2: heart rate 106-124 bpm.",
+    "Conversational pace, full sentences but you wouldn't want to sing. Flat only in Block 1 to keep the feet calm.",
+    "Cool-down: 5 min easy."
+  ],
+  note: "Zone 2 target 106-124 bpm (Tanaka, age 44). Walk on the treadmill flat, or ride the Peloton at low resistance."
+};
+const SAT = {
+  key: "sat", type: "cond", label: "Conditioning",
+  focus: "Non-impact circuit", durationMin: 35,
+  warmup: [["Easy bike or walk + band pull-aparts x15", "5 min"]],
+  body: [
+    "3-4 rounds, ~45s work / 20s transition, all non-impact:",
+    "Goblet squat x12 \u00b7 DB row x10/side \u00b7 farmer carry 40s \u00b7 seated bike hard 30s \u00b7 dead bug 8/side.",
+    "Keep the heart rate up, keep the feet quiet. Cool-down 5 min."
+  ],
+  note: "Impact intervals stay off in Block 1. They unlock in Block 2 only if every foot-pain rating this block stays 0-2."
+};
+const SUN = { key: "sun", type: "rest", label: "Rest" };
+ 
+const DAYS = { mon: MON, tue: TUE, wed: WED, thu: THU, fri: FRI, sat: SAT, sun: SUN };
+const ORDER = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+const DAY_ABBR = { mon: "Mon", tue: "Tue", wed: "Wed", thu: "Thu", fri: "Fri", sat: "Sat", sun: "Sun" };
+const DOW_TO_KEY = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+ 
+// ============ STATE ============
+const LS_KEY = "danielle_block1_v1";
+let store = load();
+function load() {
+  try { const r = localStorage.getItem(LS_KEY); if (r) return JSON.parse(r); } catch (e) {}
+  return { logs: {}, foot: {}, hang: {} };
 }
-
-/* ============================== STORAGE ============================== */
-const cache = {};
-async function sget(key){
-  if(cache[key]!==undefined) return cache[key];
-  try{ const r = await window.storage.get(key); const v = r? JSON.parse(r.value): null; cache[key]=v; return v; }
-  catch(e){ cache[key]=null; return null; }
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(store)); } catch (e) {} }
+ 
+// Week is your call, not the wall calendar. Defaults to Week 2 (your current week) and remembers what you last set.
+let curWeek = store.curWeek || 2;
+let curDay = DOW_TO_KEY[new Date().getDay()];
+ 
+function logKey(w, d, code) { return w + ":" + d + ":" + code; }
+ 
+// finisher active: W4 none; W1-2 Mon+Fri only; W3 all
+function finisherActive(week, dayKey) {
+  if (week === 4) return false;
+  if (week === 3) return true;
+  return dayKey === "mon" || dayKey === "fri";
 }
-async function sset(key,val){ cache[key]=val; try{ await window.storage.set(key, JSON.stringify(val)); }catch(e){ console.error('storage set failed', e); } }
-
-function sessionKey(block,week,dayKey,iso){ return `log:${block}:w${week}:${dayKey}:${iso}`; }
-function exStateKey(exId){ return `exstate:${exId}`; }
-
-async function getExState(exId){
-  return (await sget(exStateKey(exId))) || {currentTarget:null, lastWeight:null, lastReps:null, lastRPE:null, preIntensifyWeight:null, reason:''};
+ 
+// ============ TIMER ============
+let timer = { total: 0, left: 0, id: null, running: false, exName: "" };
+const tDigits = document.getElementById("timerDigits");
+const tInfo = document.getElementById("timerInfo");
+const tToggle = document.getElementById("tToggle");
+ 
+function fmt(s) { const m = Math.floor(s / 60); const r = s % 60; return m + ":" + String(r).padStart(2, "0"); }
+function renderTimer() {
+  tDigits.textContent = fmt(timer.left);
+  tDigits.className = "timer-digits" + (timer.running ? " run" : "") + (timer.left === 0 && timer.total > 0 ? " zero" : "");
+  tToggle.textContent = timer.running ? "\u23f8" : "\u25b6";
 }
-async function setExState(exId, state){ await sset(exStateKey(exId), state); }
-
-async function getSession(block,week,dayKey,iso){
-  return (await sget(sessionKey(block,week,dayKey,iso))) || {exercises:{}, footPain:null, backPain:null};
+function startTimer(seconds, name) {
+  clearInterval(timer.id);
+  timer.total = seconds; timer.left = seconds; timer.running = true; timer.exName = name || "";
+  tInfo.innerHTML = "<b>Resting \u00b7 " + (name || "") + "</b>" + seconds + "s pulled from this exercise's prescription.";
+  timer.id = setInterval(tick, 1000);
+  renderTimer();
 }
-async function saveSession(block,week,dayKey,iso,sess){ await sset(sessionKey(block,week,dayKey,iso), sess); }
-
-/* ============================== PROGRESSION ENGINE ============================== */
-function roundToIncrement(v, cat){
-  const inc = cat==='lower' ? 5 : 2.5;
-  return Math.round(v/inc)*inc;
+function tick() {
+  if (timer.left > 0) { timer.left--; renderTimer(); if (timer.left === 0) alarm(); }
 }
-
-function computeNextTarget(exId, loggedWeight, loggedReps, loggedRPE, curPhaseObj, nextPhaseObj, exState){
-  const cat = EX[exId].cat;
-  if(!nextPhaseObj){
-    return {target:loggedWeight, reason:'End of program. Hold at this weight pending Block 4 planning.'};
-  }
-  if(nextPhaseObj.phase==='deload'){
-    const t = roundToIncrement(loggedWeight*0.825, cat);
-    return {target:t, reason:`Deload next: load cut ~17% from ${loggedWeight}lb.`};
-  }
-  if(curPhaseObj.phase==='deload' && nextPhaseObj.phase!=='deload'){
-    const t = exState.preIntensifyWeight || roundToIncrement(loggedWeight*1.18, cat);
-    return {target:t, reason: exState.preIntensifyWeight
-      ? `Resuming post-deload at your last intensification-week weight (${t}lb).`
-      : `Resuming post-deload. No prior intensification weight on file, estimated at ${t}lb — adjust if that's off.`};
-  }
-  const rpeMax = curPhaseObj.rpeMax;
-  if(loggedReps>=curPhaseObj.repsHigh && loggedRPE<=rpeMax){
-    const inc = cat==='lower'?5:2.5;
-    const t = loggedWeight+inc;
-    return {target:t, reason:`Hit top of range (${loggedReps}) at RPE ${loggedRPE}, add ${inc}lb next time.`};
-  }
-  if(loggedRPE>rpeMax){
-    return {target:loggedWeight, reason:`RPE ${loggedRPE} ran above the ${curPhaseObj.rpe} target, hold ${loggedWeight}lb next time.`};
-  }
-  return {target:loggedWeight, reason:`Reps under top of range, repeat ${loggedWeight}lb before progressing.`};
-}
-
-async function logSet(exId, block, week, weight, reps, rpe){
-  const exState = await getExState(exId);
-  const curPhase = phaseFor(block, week);
-  const tIdx = TIMELINE.findIndex(t=>t.block===block && t.week===week);
-  const nextPhaseEntry = TIMELINE[tIdx+1] || null;
-  exState.lastWeight = weight; exState.lastReps = reps; exState.lastRPE = rpe;
-  if(curPhase.phase==='intensify') exState.preIntensifyWeight = weight;
-  const {target, reason} = computeNextTarget(exId, weight, reps, rpe, curPhase, nextPhaseEntry, exState);
-  exState.currentTarget = target; exState.reason = reason;
-  await setExState(exId, exState);
-  return {target, reason};
-}
-
-/* ============================== FOOT PAIN GATE ============================== */
-async function blockFootDataClean(block){
-  const range = BLOCK_RANGES.find(b=>b.id===block);
-  if(!range) return null;
-  const template = DAYS[block];
-  const strengthDays = Object.keys(template).filter(k=>template[k].type==='strength');
-  let start = parseISO(range.start), end = parseISO(range.end);
-  let found=false, allClean=true;
-  for(let d=new Date(start); d<=end; d=addDays(d,1)){
-    const dow = DOW_KEYS[d.getDay()];
-    if(!strengthDays.includes(dow)) continue;
-    const r = resolveDate(d);
-    if(!r) continue;
-    const sess = await sget(sessionKey(r.block, r.week, r.dayKey, toISO(d)));
-    if(sess && sess.footPain!=null){ found=true; if(sess.footPain>2) allClean=false; }
-  }
-  if(!found) return null;
-  return allClean;
-}
-
-/* ============================== RENDER: 7-DAY STRIP ============================== */
-let selectedDate = new Date();
-
-async function renderStrip(){
-  const strip = document.getElementById('strip');
-  strip.innerHTML='';
-  const today = new Date(); today.setHours(0,0,0,0);
-  for(let i=0;i<7;i++){
-    const d = addDays(today, i);
-    const r = resolveDate(d);
-    const card = document.createElement('div');
-    card.className = 'strip-card' + (i===0?' today':'') + (toISO(d)===toISO(selectedDate)?' selected':'');
-    let typeClass='tp-rest', typeLabel='—', deload=false, dur=null;
-    if(r){
-      const tmpl = dayTemplate(r.block, r.dayKey);
-      const phase = phaseFor(r.block, r.week);
-      deload = phase && phase.phase==='deload';
-      dur = expectedDuration(tmpl);
-      if(tmpl.type==='strength'){typeClass='tp-strength'; typeLabel=tmpl.focus;}
-      else if(tmpl.type==='sprint'){typeClass='tp-sprint'; typeLabel=tmpl.machine;}
-      else if(tmpl.type==='cardio'){typeClass='tp-cardio'; typeLabel=tmpl.machine;}
-      else if(tmpl.type==='conditioning'){typeClass='tp-cond'; typeLabel=tmpl.focus;}
-      else if(tmpl.type==='review'){typeClass='tp-review'; typeLabel='Review';}
-      else {typeClass='tp-rest'; typeLabel='Rest';}
-    }
-    card.innerHTML = `<div class="dow">${DOW_LABEL[d.getDay()]}</div>
-      <div class="dt mono">${d.getMonth()+1}/${d.getDate()}</div>
-      <div class="type ${typeClass}">${typeLabel}${deload?'<span class="deload-dot"></span>':''}</div>
-      ${dur?`<div class="dur mono">${dur} min</div>`:''}`;
-    card.onclick = ()=>{ selectedDate = d; renderAll(); };
-    strip.appendChild(card);
-  }
-}
-
-/* ============================== JUMP NAV ============================== */
-function populateJumpNav(){
-  const selBlock = document.getElementById('selBlock');
-  selBlock.innerHTML = BLOCK_RANGES.map(b=>`<option value="${b.id}">${b.label}</option>`).join('');
-  const r = resolveDate(selectedDate) || {block:'block1'};
-  selBlock.value = r.block;
-  populateWeekDay();
-  selBlock.onchange = populateWeekDay;
-  document.getElementById('jumpBtn').onclick = ()=>{
-    const block = selBlock.value, week = document.getElementById('selWeek').value, dayKey = document.getElementById('selDay').value;
-    // find a real date matching this block/week/dayKey for logging context
-    const range = BLOCK_RANGES.find(b=>b.id===block);
-    let start = parseISO(range.start);
-    if(block==='taper'){
-      const idx = parseInt(dayKey.replace('d',''))-1;
-      selectedDate = addDays(start, idx);
-    } else {
-      const wk = parseInt(week);
-      let found=null;
-      for(let i=0;i<28;i++){
-        const d = addDays(start, (wk-1)*7 + i);
-        if(DOW_KEYS[d.getDay()]===dayKey){ found=d; break; }
-      }
-      selectedDate = found || start;
-    }
-    renderAll();
-  };
-}
-function populateWeekDay(){
-  const block = document.getElementById('selBlock').value;
-  const selWeek = document.getElementById('selWeek');
-  const selDay = document.getElementById('selDay');
-  if(block==='taper'){
-    selWeek.innerHTML = `<option value="1">Taper week</option>`;
-    selDay.innerHTML = ['d1','d2','d3','d4','d5'].map((k,i)=>`<option value="${k}">Day ${i+1} · ${DAYS.taper[k].label}</option>`).join('');
-  } else {
-    selWeek.innerHTML = PHASES[block].map(p=>`<option value="${p.week}">Week ${p.week}${p.phase==='deload'?' (deload)':''}</option>`).join('');
-    selDay.innerHTML = ['mon','tue','wed','thu','fri','sat','sun'].map(k=>`<option value="${k}">${DOW_LABEL[DOW_KEYS.indexOf(k)]} · ${DAYS[block][k].label}</option>`).join('');
-  }
-}
-
-/* ============================== RENDER: MAIN DAY VIEW ============================== */
-async function renderMain(){
-  const main = document.getElementById('main');
-  const r = resolveDate(selectedDate);
-  if(!r){ main.innerHTML = '<div class="card">Outside the current 3-month plan.</div>'; return; }
-  const tmpl = dayTemplate(r.block, r.dayKey);
-  const phase = phaseFor(r.block, r.week);
-  const iso = toISO(selectedDate);
-  const sess = await getSession(r.block, r.week, r.dayKey, iso);
-
-  let html = '';
-  const deloadBadge = phase && phase.phase==='deload' ? '<span class="badge deload">Deload</span>' : '';
-  let heading = tmpl.label, subLabel = '';
-  if(tmpl.type==='strength'){ heading = tmpl.focus; subLabel = tmpl.label; }
-  else if(tmpl.type==='sprint'){ heading = tmpl.machine; subLabel = tmpl.label; }
-  else if(tmpl.type==='cardio'){ heading = tmpl.machine; subLabel = 'Zone 2'; }
-  else if(tmpl.type==='conditioning'){ heading = tmpl.focus; subLabel = tmpl.label; }
-  const dur = expectedDuration(tmpl);
-  html += `<div class="day-banner"><h2>${heading}${deloadBadge}</h2>
-    <div class="meta">${subLabel?subLabel+' · ':''}${r.blockLabel} · ${DOW_LABEL[selectedDate.getDay()]} ${selectedDate.getMonth()+1}/${selectedDate.getDate()}${phase?' · RPE target '+phase.rpe:''}${dur?' · ~'+dur+' min':''}</div></div>`;
-
-  if(tmpl.type==='strength'){
-    if(tmpl.hang){
-      html += `<div class="warmup">Warm-up: band pull-aparts x15, bosu single-leg foot doming 2x20s/side, dead hang — ${tmpl.hang.type}${tmpl.hang.dur?`: ${tmpl.hang.sets}x${tmpl.hang.dur}s`:` (${tmpl.hang.sets} sets)`}.</div>`;
-    } else {
-      html += `<div class="warmup">Warm-up: band pull-aparts x15, light bodyweight movement prep.</div>`;
-    }
-    for(const item of tmpl.list){
-      html += await renderExerciseCard(item, r, phase, sess, iso);
-    }
-    if(tmpl.finisher){
-      html += `<div class="finisher"><b>Finisher:</b> ${tmpl.finisher}</div>`;
-    }
-    html += renderPainLog(sess);
-  } else if(tmpl.type==='sprint'){
-    html += renderSprint(tmpl, r, sess);
-  } else if(tmpl.type==='cardio'){
-    html += `<div class="card zone2box"><h3>${tmpl.min} min</h3>
-      <div>${tmpl.mode}</div>
-      <div style="margin-top:8px;">Target heart rate: <span class="hr mono">106–124 bpm</span> (Zone 2, age 44)</div>
-      <div style="margin-top:4px; color:var(--text2); font-size:12px;">5 min warm-up, main effort in range, 5 min cool-down.</div></div>`;
-  } else if(tmpl.type==='conditioning'){
-    html += await renderConditioning(tmpl, r, sess, iso);
-    html += renderPainLog(sess);
-  } else if(tmpl.type==='review'){
-    html += `<div class="card review"><h3>Block Review</h3>
-      <ul>
-        <li>Run Data Review Protocol: RPE alignment, progression rate, stalled lifts, foot pain trend, dead hang trajectory, missed sessions</li>
-        <li>Confirm current dead hang best against the 2:00 target</li>
-        <li>Confirm whether Phase 2 impact tolerance supports further progression next block</li>
-        <li>Revisit the calf-work question flagged in the Block 3 audit</li>
-      </ul></div>`;
-  } else {
-    html += `<div class="card">Full rest. No training scheduled.</div>`;
-  }
-
-  main.innerHTML = html;
-  wireExerciseInputs(r, phase, iso);
-  wirePainLog(r, phase, iso);
-  wireConditioningChecks(r, iso);
-  wireSprint(r, iso, tmpl);
-}
-
-async function renderExerciseCard(item, r, phase, sess, iso){
-  const info = EX[item.ex];
-  const exState = await getExState(item.ex);
-  const progressable = PROGRESSABLE.includes(info.unit);
-  let repsLow = item.repsLow, repsHigh = item.repsHigh;
-  if(phase && phase.phase!=='taper' && progressable){ /* main lifts follow week phase rep range */ }
-  const sets = (phase && phase.phase==='deload') ? Math.max(2, item.sets-1) : item.sets;
-  let targetWeight = exState.currentTarget || info.start || null;
-  const rxWeight = progressable ? (targetWeight? `${targetWeight}lb target` : 'log your starting weight') : (info.unit==='time'?`${item.repsLow}s hold`:'bodyweight');
-
-  let rows = '';
-  for(let s=1;s<=sets;s++){
-    const logged = (sess.exercises[item.ex] && sess.exercises[item.ex][s-1]) || {};
-    rows += `<div class="setrow" data-ex="${item.ex}" data-set="${s}">
-      <div class="lbl mono">${s}</div>
-      <input type="number" inputmode="decimal" placeholder="${progressable?'lb':'—'}" class="wIn" value="${logged.weight??''}" ${progressable?'':'disabled'}>
-      <input type="number" inputmode="numeric" placeholder="reps/${repsLow}-${repsHigh}" class="rIn" value="${logged.reps??''}">
-      <input type="number" inputmode="numeric" placeholder="RPE" class="pIn" value="${logged.rpe??''}" min="1" max="10">
-      <div class="check ${logged.done?'done':''}" data-role="check">${logged.done?'✓':''}</div>
-    </div>`;
-  }
-  const cue = (progressable && exState.reason) ? `<div class="cue">${exState.reason}</div>` : '';
-  return `<div class="card" data-exwrap="${item.ex}" data-rest="${item.rest}">
-    <h3>${info.name}</h3>
-    <div class="rx">${sets}×${repsLow===repsHigh?repsLow:repsLow+'-'+repsHigh} · rest ${item.rest}s · ${rxWeight}${phase?` · RPE ${phase.rpe}`:''}</div>
-    ${rows}
-    ${cue}
-  </div>`;
-}
-
-function renderPainLog(sess){
-  return `<div class="card"><h3>Foot &amp; Back Check</h3>
-    <div class="pain"><span style="width:46px;font-size:12px;color:var(--text2)">Foot</span>
-      <input type="range" id="footPain" min="0" max="10" value="${sess.footPain??0}"><span class="val mono" id="footVal">${sess.footPain??0}</span></div>
-    <div class="pain"><span style="width:46px;font-size:12px;color:var(--text2)">Back</span>
-      <input type="range" id="backPain" min="0" max="10" value="${sess.backPain??0}"><span class="val mono" id="backVal">${sess.backPain??0}</span></div>
-    <div style="font-size:11px;color:var(--text3);margin-top:5px;">Above 4 means message before the next session, don't push through.</div>
-  </div>`;
-}
-
-async function renderConditioning(tmpl, r, sess, iso){
-  const clean = await blockFootDataClean(tmpl.gateBlock);
-  let badge, exList, note;
-  if(clean===true){
-    badge = '<span class="badge unlocked">Impact unlocked</span>';
-    exList = tmpl.impact.concat(tmpl.base.filter(e=>e!=='bosu_stepup'));
-    note = tmpl.gateBlock==='block1'
-      ? 'Phase 1 reintroduction is live: low step-ups with controlled landings + pogo hops, based on clean foot pain data from Block 1.'
-      : 'Phase 2 reintroduction is live: single-leg hops + broad jump landings, based on clean foot pain data from Block 2.';
-  } else if(clean===false){
-    badge = '<span class="badge gated">Impact gated</span>';
-    exList = tmpl.base;
-    note = `Foot pain logged above 2 during ${tmpl.gateBlock==='block1'?'Block 1':'Block 2'} strength days. Staying on the non-impact circuit until a clean stretch shows up.`;
-  } else {
-    badge = '<span class="badge gated">Impact gated — no data yet</span>';
-    exList = tmpl.base;
-    note = `No foot pain data logged yet for ${tmpl.gateBlock==='block1'?'Block 1':'Block 2'} strength days. Defaulting to the non-impact circuit until that's on record.`;
-  }
-  let rows = exList.map(id=>`<li>${EX[id].name}</li>`).join('');
-  return `<div class="card"><h3>Conditioning ${badge}</h3>
-    <div class="rx">${tmpl.rounds} rounds, rest ${tmpl.restRounds}s between rounds</div>
-    <ol style="margin:8px 0 0 18px; padding:0; font-size:13px; color:var(--text2); line-height:1.7;">${rows}</ol>
-    <div class="cue" style="margin-top:10px;">${note}</div>
-    <div style="margin-top:10px;">
-      <label style="font-size:12px;color:var(--text2);">Rounds completed</label><br>
-      <input type="number" id="roundsDone" inputmode="numeric" value="${sess.roundsDone??''}" style="width:70px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px;margin-top:4px;">
-    </div>
-  </div>`;
-}
-
-async function renderSprint(tmpl, r, sess){
-  return `<div class="card"><h3>Sprint Protocol</h3>
-    <div class="rx">${tmpl.warmupMin} min warm-up · ${tmpl.rounds}×${tmpl.work}s max effort / ${tmpl.recovery}s easy spin · ${tmpl.cooldownMin} min cool-down</div>
-    <div class="warmup" style="margin-top:9px;">Seated sprints only. Staying seated keeps load off the forefoot, this is your power/metabolic stimulus without the impact-loading concerns of running sprints.</div>
-    <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
-      <button class="btn brass" id="startSprintBtn">Start Sprint Set</button>
-      <span id="sprintStatus" style="font-size:12px;color:var(--text2);">Timer will auto-chain through all ${tmpl.rounds} rounds</span>
-    </div>
-    <div style="margin-top:12px;">
-      <label style="font-size:12px;color:var(--text2);">Rounds completed</label><br>
-      <input type="number" id="sprintRoundsDone" inputmode="numeric" value="${sess.sprintRoundsDone??''}" style="width:70px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px;margin-top:4px;">
-    </div>
-  </div>`;
-}
-
-function wireSprint(r, iso, tmpl){
-  const btn = document.getElementById('startSprintBtn');
-  if(btn){
-    btn.onclick = ()=>{
-      startSprintSequence(tmpl.rounds, tmpl.work, tmpl.recovery);
-      document.getElementById('sprintStatus').textContent = 'Sprint set running, follow the timer bar below';
-    };
-  }
-  const rd = document.getElementById('sprintRoundsDone');
-  if(rd){
-    rd.onchange = async ()=>{
-      const sess = await getSession(r.block, r.week, r.dayKey, iso);
-      sess.sprintRoundsDone = rd.value?parseInt(rd.value):null;
-      await saveSession(r.block, r.week, r.dayKey, iso, sess);
-    };
-  }
-}
-
-
-function wireExerciseInputs(r, phase, iso){
-  document.querySelectorAll('.setrow').forEach(row=>{
-    const exId = row.dataset.ex, setNum = parseInt(row.dataset.set);
-    const wIn = row.querySelector('.wIn'), rIn = row.querySelector('.rIn'), pIn = row.querySelector('.pIn');
-    const check = row.querySelector('[data-role=check]');
-    check.onclick = async ()=>{
-      const done = !check.classList.contains('done');
-      check.classList.toggle('done', done);
-      check.textContent = done? '✓' : '';
-      const sess = await getSession(r.block, r.week, r.dayKey, iso);
-      sess.exercises[exId] = sess.exercises[exId] || [];
-      sess.exercises[exId][setNum-1] = {
-        weight: wIn.value?parseFloat(wIn.value):null,
-        reps: rIn.value?parseFloat(rIn.value):null,
-        rpe: pIn.value?parseFloat(pIn.value):null,
-        done
-      };
-      await saveSession(r.block, r.week, r.dayKey, iso, sess);
-      if(done){
-        const restSec = parseInt(row.closest('.card').dataset.rest) || 60;
-        startTimer(restSec, 'REST', `${EX[exId].name} · set ${setNum} · ${restSec}s`);
-        if(PROGRESSABLE.includes(EX[exId].unit) && wIn.value && rIn.value && pIn.value){
-          const {reason} = await logSet(exId, r.block, r.week, parseFloat(wIn.value), parseFloat(rIn.value), parseFloat(pIn.value));
-          const wrap = document.querySelector(`[data-exwrap="${exId}"]`);
-          let cue = wrap.querySelector('.cue');
-          if(!cue){ cue = document.createElement('div'); cue.className='cue'; wrap.appendChild(cue); }
-          cue.textContent = reason;
-        }
-      }
-    };
-  });
-}
-
-function wirePainLog(r, phase, iso){
-  const foot = document.getElementById('footPain'), back = document.getElementById('backPain');
-  if(!foot) return;
-  const footVal = document.getElementById('footVal'), backVal = document.getElementById('backVal');
-  const save = async ()=>{
-    const sess = await getSession(r.block, r.week, r.dayKey, iso);
-    sess.footPain = parseInt(foot.value); sess.backPain = parseInt(back.value);
-    await saveSession(r.block, r.week, r.dayKey, iso, sess);
-  };
-  foot.oninput = ()=>{ footVal.textContent = foot.value; save(); };
-  back.oninput = ()=>{ backVal.textContent = back.value; save(); };
-}
-
-function wireConditioningChecks(r, iso){
-  const rd = document.getElementById('roundsDone');
-  if(!rd) return;
-  rd.onchange = async ()=>{
-    const sess = await getSession(r.block, r.week, r.dayKey, iso);
-    sess.roundsDone = rd.value?parseInt(rd.value):null;
-    await saveSession(r.block, r.week, r.dayKey, iso, sess);
-  };
-}
-
-/* ============================== TIMER ============================== */
-let timerInterval=null, timerRemaining=0, timerRunning=false, timerOnComplete=null;
-let sprintState=null;
-const timerDisplay = ()=>document.getElementById('timerDisplay');
-const timerBar = ()=>document.getElementById('timerbar');
-const timerMode = ()=>document.getElementById('timerMode');
-const timerCtx = ()=>document.getElementById('timerCtx');
-
-function fmt(s){ const m=Math.floor(s/60), sec=s%60; return `${m}:${sec<10?'0':''}${sec}`; }
-
-function startTimer(seconds, mode, ctx, onComplete){
-  clearInterval(timerInterval);
-  timerRemaining = seconds; timerRunning = true; timerOnComplete = onComplete || null;
-  timerBar().classList.remove('ringing');
-  timerMode().textContent = mode; timerCtx().textContent = ctx || '';
-  timerDisplay().textContent = fmt(timerRemaining);
-  timerInterval = setInterval(()=>{
-    if(!timerRunning) return;
-    timerRemaining--;
-    if(timerRemaining<=0){
-      clearInterval(timerInterval);
-      timerDisplay().textContent = '0:00';
-      timerBar().classList.add('ringing');
-      timerMode().textContent = 'TIME';
-      ringAlert();
-      timerRunning=false;
-      const cb = timerOnComplete; timerOnComplete=null;
-      if(cb) setTimeout(cb, 400);
-      return;
-    }
-    timerDisplay().textContent = fmt(timerRemaining);
-  },1000);
-}
-
-function startSprintSequence(rounds, workSec, recSec){
-  sprintState = {round:1, rounds, workSec, recSec};
-  runSprintWork();
-}
-function runSprintWork(){
-  if(!sprintState) return;
-  startTimer(sprintState.workSec, 'SPRINT', `Round ${sprintState.round}/${sprintState.rounds} · max effort`, runSprintRecovery);
-}
-function runSprintRecovery(){
-  if(!sprintState) return;
-  if(sprintState.round>=sprintState.rounds){
-    timerMode().textContent='DONE'; timerCtx().textContent='Sprint set complete'; sprintState=null; return;
-  }
-  startTimer(sprintState.recSec, 'RECOVERY', `Round ${sprintState.round}/${sprintState.rounds} · easy spin`, ()=>{
-    if(!sprintState) return;
-    sprintState.round++;
-    runSprintWork();
-  });
-}
-
-function ringAlert(){
-  try{ if(navigator.vibrate) navigator.vibrate([200,100,200,100,200]); }catch(e){}
-  try{
-    const ctx = new (window.AudioContext||window.webkitAudioContext)();
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type='sine'; o.frequency.value=880; o.connect(g); g.connect(ctx.destination);
+function alarm() {
+  timer.running = false; clearInterval(timer.id); renderTimer();
+  if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator(); const g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination); o.frequency.value = 880; o.type = "sine";
     g.gain.setValueAtTime(0.001, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime+0.02);
-    o.start();
-    o.stop(ctx.currentTime+0.9);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.85);
-  }catch(e){}
+    g.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + 0.02);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.6);
+    o.start(); o.stop(ctx.currentTime + 0.6);
+  } catch (e) {}
 }
-
-function wireTimer(){
-  document.getElementById('chipRest').onclick = ()=>{ sprintState=null; startTimer(90,'REST','Manual rest'); };
-  document.querySelectorAll('.chip[data-s]').forEach(c=>{
-    c.onclick = ()=>{ sprintState=null; startTimer(parseInt(c.dataset.s), 'TRANSITION', 'Moving to next station'); };
+tToggle.onclick = function () {
+  if (timer.total === 0) return;
+  timer.running = !timer.running;
+  if (timer.running) { if (timer.left === 0) timer.left = timer.total; timer.id = setInterval(tick, 1000); }
+  else clearInterval(timer.id);
+  renderTimer();
+};
+document.getElementById("tReset").onclick = function () {
+  clearInterval(timer.id); timer.left = timer.total; timer.running = false; renderTimer();
+};
+ 
+// ============ DURATION ============
+function strengthDuration(day, week) {
+  const meta = WEEK_META[week - 1];
+  let sec = day.wuMin * 60;
+  if (day.hang) sec += day.hang.sets * (10 + day.hang.rest);
+  day.ex.forEach(function (e) {
+    sec += meta.sets * (35 + e.rest); // ~35s work per set
   });
-  document.getElementById('chipPause').onclick = (e)=>{
-    timerRunning = !timerRunning;
-    e.target.textContent = timerRunning? 'Pause':'Resume';
-  };
-  document.getElementById('chipReset').onclick = ()=>{
-    clearInterval(timerInterval); timerRunning=false; timerRemaining=0; timerOnComplete=null; sprintState=null;
-    timerDisplay().textContent='0:00'; timerMode().textContent='IDLE'; timerCtx().textContent='Tap a chip to start';
-    timerBar().classList.remove('ringing');
-    document.getElementById('chipPause').textContent='Pause';
-  };
+  if (finisherActive(week, day.key)) sec += 420;
+  return Math.round(sec / 60);
 }
-
-/* ============================== CSV EXPORT ============================== */
-async function exportCSV(){
-  const rows = [['date','block','week','day','exercise','set','prescribed_reps_low','prescribed_reps_high','rest_s','rpe_target','weight','reps','rpe','done','foot_pain','back_pain']];
-  const start = parseISO('2026-07-02'), end = parseISO('2026-09-28');
-  for(let d=new Date(start); d<=end; d=addDays(d,1)){
-    const r = resolveDate(d);
-    if(!r) continue;
-    const tmpl = dayTemplate(r.block, r.dayKey);
-    if(tmpl.type!=='strength' && tmpl.type!=='conditioning' && tmpl.type!=='sprint') continue;
-    const iso = toISO(d);
-    const sess = await sget(sessionKey(r.block, r.week, r.dayKey, iso));
-    if(!sess) continue;
-    const phase = phaseFor(r.block, r.week);
-    if(tmpl.type==='strength'){
-      for(const item of tmpl.list){
-        const logs = sess.exercises[item.ex] || [];
-        logs.forEach((l,i)=>{
-          if(!l) return;
-          rows.push([iso, r.block, r.week, r.dayKey, EX[item.ex].name, i+1, item.repsLow, item.repsHigh, item.rest, phase?phase.rpe:'', l.weight??'', l.reps??'', l.rpe??'', l.done?1:0, sess.footPain??'', sess.backPain??'']);
-        });
-      }
-    } else if(tmpl.type==='conditioning'){
-      rows.push([iso, r.block, r.week, r.dayKey, 'Conditioning rounds', '', '', '', '', '', '', sess.roundsDone??'', '', '', sess.footPain??'', sess.backPain??'']);
-    } else if(tmpl.type==='sprint'){
-      rows.push([iso, r.block, r.week, r.dayKey, 'Sprint rounds', '', '', '', tmpl.work, '', '', sess.sprintRoundsDone??'', '', '', '', '']);
-    }
+ 
+// ============ RENDER ============
+const main = document.getElementById("main");
+ 
+function maxFootPain() {
+  let m = -1;
+  Object.keys(store.foot).forEach(function (k) { const v = store.foot[k]; if (v > m) m = v; });
+  return m;
+}
+function bestHang() {
+  let m = 0;
+  Object.keys(store.hang).forEach(function (k) { const v = store.hang[k]; if (v > m) m = v; });
+  return m;
+}
+ 
+function renderStrip() {
+  const strip = document.getElementById("weekStrip");
+  strip.innerHTML = "";
+  ORDER.forEach(function (k) {
+    const d = DAYS[k];
+    const chip = document.createElement("div");
+    chip.className = "daychip" + (k === curDay ? " sel" : "") + (k === DOW_TO_KEY[new Date().getDay()] ? " today" : "");
+    const focus = d.type === "rest" ? "Full rest" : d.focus;
+    chip.innerHTML = "<div class='dc-day'>" + DAY_ABBR[k] + "</div><div class='dc-focus'>" + focus + "</div><div class='dc-dot t-" + d.type + "'></div>";
+    chip.onclick = function () { curDay = k; renderAll(); };
+    strip.appendChild(chip);
+  });
+}
+ 
+function renderWeekNav() {
+  const nav = document.getElementById("weekNav");
+  nav.innerHTML = "";
+  for (let w = 1; w <= 4; w++) {
+    const el = document.createElement("div");
+    el.className = "wk" + (w === curWeek ? " sel" : "");
+    el.innerHTML = "W" + w + (WEEK_META[w - 1].deload ? "<span class='badge'>DELOAD</span>" : "");
+    el.onclick = function () { curWeek = w; store.curWeek = w; save(); renderAll(); };
+    nav.appendChild(el);
   }
-  const csv = rows.map(row=>row.map(v=>{
-    const s = String(v??''); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
-  }).join(',')).join('\n');
-  const blob = new Blob([csv], {type:'text/csv'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = `training-log-${toISO(new Date())}.csv`;
-  document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
+  const meta = WEEK_META[curWeek - 1];
+  document.getElementById("weekLabel").innerHTML = "Week " + curWeek + " of 4 \u00b7 " +
+    (meta.deload ? "<span class='deload'>Deload \u00b7 RPE " + meta.rpe + "</span>" : "RPE " + meta.rpe + " \u00b7 " + meta.reps + " reps");
 }
-
-/* ============================== INIT ============================== */
-async function renderAll(){
-  document.getElementById('todayLabel').textContent = new Date().toLocaleDateString(undefined,{weekday:'long', month:'long', day:'numeric'});
-  await renderStrip();
-  await renderMain();
+ 
+function renderDay() {
+  const d = DAYS[curDay];
+  main.innerHTML = "";
+  if (d.type === "rest") { renderRest(); return; }
+  if (d.type !== "strength") { renderCardio(d); return; }
+  renderStrength(d);
 }
-
-document.getElementById('exportBtn').onclick = exportCSV;
-wireTimer();
-populateJumpNav();
+ 
+function renderRest() {
+  const box = document.createElement("div");
+  box.className = "rest-note";
+  box.innerHTML = "<h2>Sunday \u00b7 Rest</h2>" +
+    "<p>Full rest. Optional easy walk if you want to move. This is where the training actually gets absorbed.</p>" +
+    "<p style='color:var(--teal);margin-top:10px;'>Levers today: hit 100g protein and protect sleep. Both matter more than any session.</p>";
+  main.appendChild(box);
+}
+ 
+function renderCardio(d) {
+  const head = document.createElement("div");
+  head.className = "day-head";
+  head.innerHTML = "<div><div class='day-title'>" + DAY_ABBR[curDay] + " \u00b7 " + d.label + "</div>" +
+    "<div class='day-sub'>" + d.focus + "</div></div>" +
+    "<div class='duration'>~" + d.durationMin + " min</div>";
+  main.appendChild(head);
+ 
+  if (d.key === "sat") {
+    const mp = maxFootPain();
+    const b = document.createElement("div");
+    if (mp > 2) { b.className = "banner lock"; b.textContent = "Foot pain has hit " + mp + " this block. Impact work stays locked. Keep conditioning non-impact."; }
+    else { b.className = "banner info"; b.textContent = "Impact locked for Block 1 (non-impact circuit below). Foot pain max so far: " + (mp < 0 ? "none logged" : mp) + "."; }
+    main.appendChild(b);
+  }
+ 
+  const wu = document.createElement("div");
+  wu.innerHTML = "<div class='section-label'>Warm-up</div>";
+  const wl = document.createElement("div"); wl.className = "warmup";
+  d.warmup.forEach(function (row) {
+    const r = document.createElement("div"); r.className = "wu";
+    r.innerHTML = "<span>" + row[0] + "</span><span class='t'>" + row[1] + "</span>";
+    wl.appendChild(r);
+  });
+  wu.appendChild(wl); main.appendChild(wu);
+ 
+  const sec = document.createElement("div");
+  sec.innerHTML = "<div class='section-label'>Session</div>";
+  const body = document.createElement("div"); body.className = "ex";
+  body.innerHTML = d.body.map(function (t) { return "<div class='ex-cue' style='font-style:normal;color:var(--text);margin:6px 0;'>" + t + "</div>"; }).join("");
+  sec.appendChild(body); main.appendChild(sec);
+ 
+  if (d.note) { const n = document.createElement("div"); n.className = "wk-note"; n.textContent = d.note; main.appendChild(n); }
+}
+ 
+function renderStrength(d) {
+  const meta = WEEK_META[curWeek - 1];
+  const dur = strengthDuration(d, curWeek);
+  const head = document.createElement("div");
+  head.className = "day-head";
+  head.innerHTML = "<div><div class='day-title'>" + DAY_ABBR[curDay] + " \u00b7 " + d.label + "</div>" +
+    "<div class='day-sub'>" + d.focus + "</div></div>" +
+    "<div class='duration'>~" + dur + " min</div>";
+  main.appendChild(head);
+ 
+  const note = document.createElement("div");
+  note.className = "wk-note" + (meta.deload ? " deload" : "");
+  note.textContent = meta.note;
+  main.appendChild(note);
+ 
+  // warm-up
+  const wuLabel = document.createElement("div");
+  wuLabel.className = "section-label";
+  wuLabel.textContent = "Warm-up \u00b7 " + d.wuMin + " min";
+  main.appendChild(wuLabel);
+  const wl = document.createElement("div"); wl.className = "warmup";
+  d.warmup.forEach(function (row) {
+    const r = document.createElement("div"); r.className = "wu";
+    r.innerHTML = "<span>" + row[0] + "</span><span class='t'>" + row[1] + "</span>";
+    wl.appendChild(r);
+  });
+  main.appendChild(wl);
+ 
+  // dead hang
+  if (d.hang) renderHang(d);
+ 
+  // main work
+  const ml = document.createElement("div");
+  ml.className = "section-label"; ml.textContent = "Main work";
+  main.appendChild(ml);
+  d.ex.forEach(function (e) { main.appendChild(renderEx(e, meta)); });
+ 
+  // finisher
+  if (finisherActive(curWeek, d.key)) {
+    const f = document.createElement("div"); f.className = "finisher";
+    f.innerHTML = "<div class='ex-top'><span class='ex-name'>Finisher</span></div><div class='ex-cue' style='color:var(--text);font-style:normal;margin-top:6px;'>" + d.finisher + "</div>";
+    main.appendChild(f);
+  } else {
+    const skip = document.createElement("div"); skip.className = "wk-note";
+    skip.textContent = curWeek === 4 ? "No finisher on deload week." : "No finisher this session. Finishers run every other strength day in Weeks 1-2, then all three in Week 3.";
+    main.appendChild(skip);
+  }
+ 
+  // foot pain (strength days only)
+  renderFoot(d);
+}
+ 
+function renderHang(d) {
+  const best = bestHang();
+  const target = 120;
+  const pct = Math.min(100, Math.round(best / target * 100));
+  const box = document.createElement("div"); box.className = "hang-box";
+  box.innerHTML =
+    "<div class='ex-top'><span class='hang-title'>" + d.hang.title + "</span><span class='ex-rx'>" + d.hang.scheme + " \u00b7 " + d.hang.rest + "s</span></div>" +
+    "<div class='bar-track'><div class='bar-fill' style='width:" + pct + "%'></div></div>" +
+    "<div class='hang-meta'><span>Best hold: <b style='color:var(--teal)'>" + best + "s</b></span><span>Target: 2:00</span></div>";
+  const row = document.createElement("div"); row.className = "hang-log-row";
+  const lab = document.createElement("div"); lab.className = "in-wrap";
+  const inp = document.createElement("input"); inp.type = "number"; inp.className = "hang-in"; inp.inputMode = "numeric";
+  inp.placeholder = "Best hold this session (s)";
+  const hk = logKey(curWeek, d.key, "hang");
+  if (store.hang[hk] != null) inp.value = store.hang[hk];
+  lab.appendChild(inp);
+  const chk = document.createElement("button"); chk.className = "chk" + (store.hang[hk] != null ? " done" : "");
+  chk.textContent = "\u2713";
+  chk.onclick = function () {
+    const v = parseInt(inp.value, 10);
+    if (!isNaN(v)) { store.hang[hk] = v; save(); renderDay(); startTimer(d.hang.rest, d.hang.title); }
+  };
+  row.appendChild(lab); row.appendChild(chk);
+  box.appendChild(row);
+  const hint = document.createElement("div"); hint.className = "foot-hint";
+  hint.textContent = "Band-assisted pull-ups begin only after a 2:00 hold. Log your best set here.";
+  box.appendChild(hint);
+  main.appendChild(box);
+}
+ 
+function renderEx(e, meta) {
+  const box = document.createElement("div");
+  box.className = "ex" + (e.isNew ? " newtag" : "");
+  const reps = e.reps || meta.reps;
+  const repsTxt = e.perSide ? reps + "/side" : reps;
+  box.innerHTML =
+    "<div class='ex-top'><span class='ex-name'>" + e.name + (e.isNew ? "<span class='new'>NEW</span>" : "") + "</span>" +
+    "<span class='ex-rx'>" + meta.sets + " \u00d7 " + repsTxt + " \u00b7 RPE " + meta.rpe + " \u00b7 " + e.rest + "s</span></div>" +
+    "<div class='ex-start'>Start: " + e.start + "</div>" +
+    "<div class='ex-cue'>" + e.cue + "</div>" +
+    "<div class='ex-prog'>\u2197 " + e.prog + "</div>";
+  const sets = document.createElement("div"); sets.className = "sets";
+  for (let s = 0; s < meta.sets; s++) sets.appendChild(renderSet(e, s));
+  box.appendChild(sets);
+  return box;
+}
+ 
+function renderSet(e, idx) {
+  const row = document.createElement("div"); row.className = "set-row";
+  const key = logKey(curWeek, curDay, e.code);
+  store.logs[key] = store.logs[key] || [];
+  const rec = store.logs[key][idx] || { w: "", r: "", rpe: "", done: false };
+  const sn = document.createElement("div"); sn.className = "set-n"; sn.textContent = (idx + 1);
+  row.appendChild(sn);
+ 
+  function field(lab, val, prop) {
+    const wrap = document.createElement("div"); wrap.className = "in-wrap";
+    const l = document.createElement("span"); l.className = "lab"; l.textContent = lab;
+    const inp = document.createElement("input"); inp.type = "number"; inp.inputMode = "decimal"; inp.value = val;
+    inp.onchange = function () {
+      store.logs[key][idx] = store.logs[key][idx] || { w: "", r: "", rpe: "", done: false };
+      store.logs[key][idx][prop] = inp.value; save();
+    };
+    wrap.appendChild(l); wrap.appendChild(inp); return wrap;
+  }
+  row.appendChild(field("lb", rec.w, "w"));
+  row.appendChild(field("reps", rec.r, "r"));
+  row.appendChild(field("rpe", rec.rpe, "rpe"));
+ 
+  const chk = document.createElement("button");
+  chk.className = "chk" + (rec.done ? " done" : "");
+  chk.textContent = "\u2713";
+  chk.onclick = function () {
+    store.logs[key][idx] = store.logs[key][idx] || { w: "", r: "", rpe: "", done: false };
+    const now = !store.logs[key][idx].done;
+    store.logs[key][idx].done = now; save();
+    chk.className = "chk" + (now ? " done" : "");
+    if (now) startTimer(e.rest, e.name);
+  };
+  row.appendChild(chk);
+  return row;
+}
+ 
+function renderFoot(d) {
+  const box = document.createElement("div"); box.className = "foot";
+  box.innerHTML = "<div class='foot-title'>Foot check \u00b7 log after the session</div>";
+  const scale = document.createElement("div"); scale.className = "foot-scale";
+  const fk = logKey(curWeek, d.key, "foot");
+  const cur = store.foot[fk];
+  for (let i = 0; i <= 5; i++) {
+    const b = document.createElement("div");
+    b.className = "fp" + (cur === i ? " sel" + (i > 2 ? " hi" : "") : "");
+    b.textContent = i;
+    b.onclick = function () { store.foot[fk] = i; save(); renderDay(); };
+    scale.appendChild(b);
+  }
+  box.appendChild(scale);
+  const hint = document.createElement("div"); hint.className = "foot-hint";
+  hint.textContent = "0 = nothing, 5 = sharp. Impact reintroduction in Block 2 needs every rating to stay 0-2 across this block.";
+  box.appendChild(hint);
+  main.appendChild(box);
+}
+ 
+// ============ CSV ============
+function csvEscape(v) { v = String(v == null ? "" : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+function exportCSV() {
+  const rows = [["week", "day", "session", "exercise", "set", "prescribed_reps", "prescribed_rpe", "rest_s", "actual_weight", "actual_reps", "actual_rpe", "completed"]];
+  [1, 2, 3, 4].forEach(function (w) {
+    const meta = WEEK_META[w - 1];
+    ["mon", "wed", "fri"].forEach(function (dk) {
+      const d = DAYS[dk];
+      d.ex.forEach(function (e) {
+        const key = logKey(w, dk, e.code);
+        const log = store.logs[key] || [];
+        for (let s = 0; s < meta.sets; s++) {
+          const rec = log[s] || {};
+          rows.push([w, dk, d.label, e.name, s + 1, e.reps || meta.reps, meta.rpe, e.rest, rec.w || "", rec.r || "", rec.rpe || "", rec.done ? "yes" : ""]);
+        }
+      });
+    });
+  });
+  // hang log
+  rows.push([]);
+  rows.push(["dead_hang_log"]);
+  rows.push(["week", "day", "best_hold_s"]);
+  Object.keys(store.hang).forEach(function (k) {
+    const p = k.split(":"); rows.push([p[0], p[1], store.hang[k]]);
+  });
+  // foot log
+  rows.push([]);
+  rows.push(["foot_pain_log"]);
+  rows.push(["week", "day", "pain_0_5"]);
+  Object.keys(store.foot).forEach(function (k) {
+    const p = k.split(":"); rows.push([p[0], p[1], store.foot[k]]);
+  });
+  const csv = rows.map(function (r) { return r.map(csvEscape).join(","); }).join("\n");
+  const d = new Date();
+  const stamp = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "danielle_block1_" + stamp + ".csv";
+  a.click();
+}
+document.getElementById("csvBtn").onclick = exportCSV;
+ 
+// ============ INIT ============
+function renderAll() { renderStrip(); renderWeekNav(); renderDay(); }
+renderTimer();
 renderAll();
 </script>
 </body>
